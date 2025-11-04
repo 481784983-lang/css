@@ -1,0 +1,539 @@
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Merriweather:ital,wght@0,400;1,400&family=Noto+Sans+SC:wght@400;500;700&family=Almendra+SC&family=Cinzel+Decorative:wght@700&family=EB+Garamond&family=Josefin+Sans&family=Playfair+Display&family=Roboto+Slab&family=Spectral&display=swap" rel="stylesheet">
+
+    <script type="module">
+        // --- [ 1. 核心依赖 ] ---
+        
+        /* [!] 关键BUG修复：
+            从 'testingcf.jsdelivr.net' (私有)
+            改为 'cdn.jsdelivr.net' (公开)
+        */
+        import { createPinia as e, defineStore as t } from 'https://cdn.jsdelivr.net/npm/pinia/+esm';
+        const l = Vue; // Vue 实例 (假设全局可用)
+        
+        // --- [ 2. 核心数据 (和你“正确”示例一致) ] ---
+        
+        // `o()` 函数 (重命名为 useStatData)
+        function useStatData() {
+            const e = (0, l.ref)(null), // statData
+                  t = (0, l.ref)(!0), // loading
+                  a = (0, l.ref)(null); // error
+            
+            const n = () => { // loadData
+                try {
+                    const t = getVariables({ type: 'message', message_id: getCurrentMessageId() });
+                    const n = _.get(t, 'stat_data', {});
+                    if (!n || 0 === Object.keys(n).length) throw new Error('无法获取状态数据');
+                    e.value = n; 
+                    a.value = null; 
+                } catch (e) {
+                    console.error('加载数据失败:', e);
+                    a.value = e instanceof Error ? e.message : '未知错误';
+                } finally {
+                    t.value = !1; 
+                }
+            };
+            
+            (0, l.onMounted)(() => { n() }); 
+            
+            return { statData: e, loading: t, error: a, loadData: n };
+        }
+        
+        // 辅助函数 (来自你的Vue示例)
+        function r(e, t, a) { return _.get(e, t, a) } // SafeGetValue
+        function c(e) { return e && 'object' == typeof e ? _.omitBy(e, (e, t) => '$meta' === t || '$__META_EXTENSIBLE__$' === t) : {} } // CleanObject
+        function s(e) { return Array.isArray(e) ? 0 === e.length || '$__META_EXTENSIBLE__$' === e[0] ? [] : e : e || '' } // CleanArray
+
+        // --- [ 3. 基础组件 (来自你的“正确”示例) ] ---
+        // 这是你示例中的 `CommonStatus` 组件 (k)，用于实现平滑的折叠动画
+        
+        const i = { class: 'summary-main-line' };
+        const m = { class: 'summary-title' };
+        const u = { key: 0, class: 'summary-details' };
+        const d = { key: 0, class: 'summary-wrapped-details' };
+        const p = { class: 'details-content' };
+        const v = { class: 'details-content-inner' };
+        const y = (0, l.defineComponent)({
+            __name: 'CommonStatus',
+            props: { title: {}, summaryDetails: { default: '' }, defaultOpen: { type: Boolean, default: !1 }, locked: { type: Boolean, default: !1 }, variant: { default: 'section' }, icon: { default: '' }, customClass: { default: '' } },
+            setup(e) {
+                const t = e,
+                      a = (0, l.ref)(t.defaultOpen),
+                      n = (0, l.ref)(window.innerWidth),
+                      o = () => { n.value = window.innerWidth };
+                (0, l.onMounted)(() => { window.addEventListener('resize', o) });
+                (0, l.onUnmounted)(() => { window.removeEventListener('resize', o) });
+                
+                const r_ = (0, l.computed)(() => {
+                    if (!t.summaryDetails) return !1;
+                    const e = t.summaryDetails.length;
+                    return n.value <= 600 ? e > 10 : n.value <= 1e3 ? e > 30 : e > 50
+                });
+                const c_ = (0, l.computed)(() => {
+                    const e = ['details-status', `details-${t.variant}`];
+                    return t.locked && e.push('locked'), a.value && e.push('is-open'), t.customClass && e.push(t.customClass), e.join(' ')
+                });
+                const s_ = () => { t.locked || (a.value = !a.value) };
+                
+                // 动画钩子
+                const y_ = e => { const t = e; t.style.height = '0', t.style.overflow = 'hidden', t.offsetHeight, t.style.height = `${t.scrollHeight}px` };
+                const f_ = e => { const t = e; t.style.height = '', t.style.overflow = '' };
+                const k_ = e => { const t = e; t.style.height = `${t.scrollHeight}px`, t.style.overflow = 'hidden', t.offsetHeight, t.style.height = '0' };
+                const g_ = e => { const t = e; t.style.height = '', t.style.overflow = '' };
+                
+                return (t, n) => (
+                    (0, l.openBlock)(), (0, l.createElementBlock)('div', { class: (0, l.normalizeClass)((0, l.unref)(c_)) }, [
+                        (0, l.createElementVNode)('div', { class: (0, l.normalizeClass)(['summary', { 'has-wrapped-summary': (0, l.unref)(r_) }]), onClick: s_ }, [
+                            (0, l.createElementVNode)('div', i, [
+                                (0, l.createElementVNode)('span', { class: (0, l.normalizeClass)(['icon-star', { 'is-open': (0, l.unref)(a) }]) }, (0, l.toDisplayString)(e.icon || '✦'), 3),
+                                (0, l.createElementVNode)('span', m, [(0, l.renderSlot)(t.$slots, 'title', {}, () => [(0, l.createTextVNode)((0, l.toDisplayString)(e.title), 1)])]),
+                                e.summaryDetails && !(0, l.unref)(r_) ? ((0, l.openBlock)(), (0, l.createElementBlock)('span', u, (0, l.toDisplayString)(e.summaryDetails), 1)) : (0, l.createCommentVNode)('v-if', !0),
+                                (0, l.createElementVNode)('span', { class: (0, l.normalizeClass)(['arrow-toggle', { rotated: (0, l.unref)(a) }]) }, '▼', 2)
+                            ]),
+                            e.summaryDetails && (0, l.unref)(r_) ? ((0, l.openBlock)(), (0, l.createElementBlock)('div', d, (0, l.toDisplayString)(e.summaryDetails), 1)) : (0, l.createCommentVNode)('v-if', !0)
+                        ], 2),
+                        (0, l.createVNode)(l.Transition, { name: 'collapse', onEnter: y_, onAfterEnter: f_, onLeave: k_, onAfterLeave: g_, persisted: '' }, {
+                            default: (0, l.withCtx)(() => [
+                                (0, l.withDirectives)((0, l.createElementVNode)('div', p, [
+                                    (0, l.createElementVNode)('div', v, [(0, l.renderSlot)(t.$slots, 'default')])
+                                ], 512), [[l.vShow, (0, l.unref)(a)]])
+                            ]),
+                            _: 3
+                        })
+                    ], 2)
+                )
+            }
+        });
+        
+        var n_ = {}; // 修正变量名，避免与 setup 中的 n 冲突
+        var f = function e(t) { var l = n_[t]; if (void 0 !== l) return l.exports; var o = n_[t] = { exports: {} }; return a[t](o, o.exports, e), o.exports }({ 441: (e, t) => { t.A = (e, t) => { const a = e.__vccOpts || e; for (const [e, n] of t) a[e] = n; return a } } });
+        
+        // [!] 我们的基础组件 (CommonStatus)
+        const k = (0, f.A)(y, [['__scopeId', 'data-v-6dac0e4c']]); // [!] 必须使用这个 scopeId 来匹配CSS
+
+        // --- [ 4. "无双志" 的新 Vue 组件 ] ---
+        
+        // [!] 头部组件 (标题和诗)
+        const WsHeader = (0, l.defineComponent)({
+            __name: 'WsHeader',
+            setup() {
+                const { statData: e } = useStatData();
+                const t = (0, l.computed)(() => {
+                    const t = r(e.value, '天下闻.咏叹', ['（暂无诗篇）']);
+                    const a = String(t[0] || '（暂无诗篇）').replace(/\\\\n/g, '\n').replace(/\\n/g, '\n');
+                    return a.split('\n').filter(line => line.trim() !== '');
+                });
+                return (e, a) => (
+                    (0, l.createElementBlock)('div', { class: "scroll-header" }, [
+                        (0, l.createElementVNode)('div', { class: "master-ui-title" }, [
+                            (0, l.createElementVNode)('h1', null, "无双志")
+                        ]),
+                        (0, l.createElementVNode)('div', { class: "scroll-poem-container" }, [
+                            (0, l.createElementVNode)('h1', null, "宿命诗"),
+                            (0, l.createElementVNode)('div', { class: "poem-grid" }, [
+                                ((0, l.openBlock)(!0), (0, l.createElementBlock)(l.Fragment, null, (0, l.renderList)([0, 2, 4, 6], (a) => (
+                                    (0, l.openBlock)(), (0, l.createElementBlock)(l.Fragment, { key: a }, [
+                                        (0, l.createElementVNode)('p', null, (0, l.toDisplayString)((0, l.unref)(t)[a] || '...'), 1),
+                                        (0, l.createElementVNode)('p', null, (0, l.toDisplayString)((0, l.unref)(t)[a + 1] || '...'), 1)
+                                    ], 64)
+                                )), 128))
+                            ])
+                        ])
+                    ])
+                )
+            }
+        });
+        const WsHeaderStyled = (0, f.A)(WsHeader, [['__scopeId', 'data-v-wushuang-header']]);
+
+        // [!] 世界信息组件
+        const WsWorld = (0, l.defineComponent)({
+            __name: 'WsWorld',
+            setup() {
+                const { statData: e } = useStatData();
+                const t = (0, l.computed)(() => r(e.value, '世界.时间', ['未知时间'])[0]);
+                const a = (0, l.computed)(() => r(e.value, '世界.地点', ['未知地点'])[0]);
+                return (e, n) => (
+                    (0, l.createElementBlock)('div', { class: "world-status" }, [
+                        (0, l.createElementVNode)('p', { class: "world-info" }, [
+                            (0, l.createElementVNode)('span', { class: "info-icon" }, '⏳️'),
+                            (0, l.createElementVNode)('span', { class: "info-label" }, '时间:'),
+                            (0, l.createElementVNode)('span', { class: "value-main" }, (0, l.toDisplayString)((0, l.unref)(t)), 1)
+                        ]),
+                        (0, l.createElementVNode)('p', { class: "world-info" }, [
+                            (0, l.createElementVNode)('span', { class: "info-icon" }, '📍'),
+                            (0, l.createElementVNode)('span', { class: "info-label" }, '地点:'),
+                            (0, l.createElementVNode)('span', { class: "value-main" }, (0, l.toDisplayString)((0, l.unref)(a)), 1)
+                        ])
+                    ])
+                )
+            }
+        });
+        const WsWorldStyled = (0, f.A)(WsWorld, [['__scopeId', 'data-v-77b8dafd']]); // [!] 复用你的Vue示例的CSS
+
+        // [!] 主角组件
+        const WsProtagonist = (0, l.defineComponent)({
+            __name: 'WsProtagonist',
+            setup() {
+                const { statData: e } = useStatData();
+                const t = (0, l.computed)(() => r(e.value, '主角', {}));
+                const a = (0, l.computed)(() => [
+                    { k: '声望', i: 'fa-star-half-alt', v: r(t.value, '声望', ['--'])[0] },
+                    { k: '官职', i: 'fa-scroll', v: r(t.value, '官职', ['--'])[0] },
+                    { k: '血脉', i: 'fa-dna', v: r(t.value, '血脉', ['--'])[0] },
+                    { k: '武力', i: 'fa-gavel', v: r(t.value, '武力', [0])[0] },
+                    { k: '谋略', i: 'fa-brain', v: r(t.value, '谋略', [0])[0] },
+                    { k: '魅力', i: 'fa-heart-circle-bolt', v: r(t.value, '魅力', [0])[0] },
+                ]);
+                const n = (0, l.computed)(() => Object.entries(c(r(t.value, '仙术[0]', {}))));
+                
+                return (e, t_setup) => ( // [!] 修正变量名
+                    (0, l.createBlock)(k, { title: "主角", icon: "👤", "default-open": !0 }, {
+                        default: (0, l.withCtx)(() => [
+                            (0, l.createElementVNode)('div', { class: "ws-section-content" }, [
+                                (0, l.createElementVNode)('div', { class: "char-property-grid" }, [
+                                    ((0, l.openBlock)(!0), (0, l.createElementBlock)(l.Fragment, null, (0, l.renderList)((0, l.unref)(a), (o) => (
+                                        (0, l.openBlock)(), (0, l.createElementBlock)(l.Fragment, { key: o.k }, [
+                                            (0, l.createElementVNode)('i', { class: (0, l.normalizeClass)(['fa-solid', o.i, 'char-icon']) }, null, 2),
+                                            (0, l.createElementVNode)('span', { class: "char-prop-name" }, (0, l.toDisplayString)(o.k), 1),
+                                            (0, l.createElementVNode)('span', { class: "char-prop-value" }, (0, l.toDisplayString)(o.v), 1)
+                                        ], 64)
+                                    )), 128))
+                                ]),
+                                (0, l.createElementVNode)('hr'),
+                                (0, l.createElementVNode)('h4', null, '仙术/技能'),
+                                (0, l.unref)(n).length > 0
+                                    ? ((0, l.openBlock)(!0), (0, l.createElementBlock)(l.Fragment, { key: 0 }, (0, l.renderList)((0, l.unref)(n), ([o, c_]) => (
+                                        (0, l.openBlock)(), (0, l.createBlock)(k, {
+                                            key: o,
+                                            title: r(c_, '名称', [o])[0],
+                                            variant: 'sub-section'
+                                        }, {
+                                            default: (0, l.withCtx)(() => [
+                                                (0, l.createElementVNode)('div', { class: "ws-sub-section-content" }, (0, l.toDisplayString)(r(c_, '描述', ['暂无描述。'])[0]), 1)
+                                            ]),
+                                            _: 2
+                                        }, 1032, ['title'])
+                                    )), 128))
+                                    : ((0, l.openBlock)(), (0, l.createElementBlock)('p', { key: 1, class: "empty-state-text" }, "(空)"))
+                            ])
+                        ]),
+                        _: 1
+                    })
+                )
+            }
+        });
+        const WsProtagonistStyled = (0, f.A)(WsProtagonist, [['__scopeId', 'data-v-wushuang-char']]);
+
+        // [!] 行囊组件
+        const WsHangnang = (0, l.defineComponent)({
+            __name: 'WsHangnang',
+            setup() {
+                const { statData: e } = useStatData();
+                const t = (0, l.computed)(() => r(e.value, '行囊.装备', {}));
+                const a = (0, l.computed)(() => [
+                    { k: '武器', i: 'fa-khanda', v: r(t.value, '武器', ['--'])[0] },
+                    { k: '防具', i: 'fa-shirt', v: r(t.value, '防具', ['--'])[0] },
+                    { k: '饰品', i: 'fa-gem', v: r(t.value, '饰品', ['--'])[0] },
+                ]);
+                const n = (0, l.computed)(() => Object.entries(c(r(e.value, '行囊.背包[0]', {}))));
+
+                return (e, t_setup) => ( // [!] 修正变量名
+                    (0, l.createBlock)(k, { title: "行囊", icon: "🎒" }, {
+                        default: (0, l.withCtx)(() => [
+                            (0, l.createElementVNode)('div', { class: "ws-section-content no-padding" }, [
+                                (0, l.createBlock)(k, { title: "装备", variant: 'sub-section', "default-open": !0 }, {
+                                    default: (0, l.withCtx)(() => [
+                                        (0, l.createElementVNode)('div', { class: "ws-sub-section-content" }, [
+                                            (0, l.createElementVNode)('div', { class: "char-property-grid" }, [
+                                                ((0, l.openBlock)(!0), (0, l.createElementBlock)(l.Fragment, null, (0, l.renderList)((0, l.unref)(a), (o) => (
+                                                    (0, l.openBlock)(), (0, l.createElementBlock)(l.Fragment, { key: o.k }, [
+                                                        (0, l.createElementVNode)('i', { class: (0, l.normalizeClass)(['fa-solid', o.i, 'char-icon']) }, null, 2),
+                                                        (0, l.createElementVNode)('span', { class: "char-prop-name" }, (0, l.toDisplayString)(o.k), 1),
+                                                        (0, l.createElementVNode)('span', { class: "char-prop-value" }, (0, l.toDisplayString)(o.v), 1)
+                                                    ], 64)
+                                                )), 128))
+                                            ])
+                                        ])
+                                    ]),
+                                    _: 1
+                                }),
+                                (0, l.createBlock)(k, { title: "背包", variant: 'sub-section' }, {
+                                    default: (0, l.withCtx)(() => [
+                                        (0, l.createElementVNode)('div', { class: "ws-sub-section-content" }, [
+                                            (0, l.unref)(n).length > 0
+                                                ? ((0, l.openBlock)(!0), (0, l.createElementBlock)(l.Fragment, { key: 0 }, (0, l.renderList)((0, l.unref)(n), ([o, c_]) => (
+                                                    (0, l.openBlock)(), (0, l.createElementBlock)('div', { key: o, class: "item-row" }, [
+                                                        (0, l.createElementVNode)('span', { class: "value-main" }, (0, l.toDisplayString)(r(c_, '名称', [o])[0]), 1),
+                                                        (0, l.createElementVNode)('span', { class: "property-name" }, 'x ' + (0, l.toDisplayString)(r(c_, '数量', [0])[0]), 1)
+                                                    ])
+                                                )), 128))
+                                                : ((0, l.openBlock)(), (0, l.createElementBlock)('p', { key: 1, class: "empty-state-text" }, "(空)"))
+                                        ])
+                                    ]),
+                                    _: 1
+                                })
+                            ])
+                        ]),
+                        _: 1
+                    })
+                )
+            }
+        });
+        const WsHangnangStyled = (0, f.A)(WsHangnang, [['__scopeId', 'data-v-wushuang-char']]); // 复用 char 的 css
+
+        // [!] 结缘录组件
+        const WsFates = (0, l.defineComponent)({
+            __name: 'WsFates',
+            setup() {
+                const { statData: e } = useStatData();
+                const t = (0, l.computed)(() => Object.entries(c(r(e.value, '结缘录[0]', {}))));
+                
+                return (e, a) => (
+                    (0, l.createBlock)(k, { title: "结缘录", icon: "💞" }, {
+                        default: (0, l.withCtx)(() => [
+                            (0, l.createElementVNode)('div', { class: "ws-section-content no-padding" }, [
+                                (0, l.unref)(t).length > 0
+                                    ? ((0, l.openBlock)(!0), (0, l.createElementBlock)(l.Fragment, { key: 0 }, (0, l.renderList)((0, l.unref)(t), ([o, c_]) => (
+                                        (0, l.openBlock)(), (0, l.createBlock)(k, {
+                                            key: o,
+                                            title: r(c_, '姓名', [o])[0],
+                                            variant: 'sub-section',
+                                            "summary-details": `好感: ${r(c_, '好感度', [0])[0]}`
+                                        }, {
+                                            default: (0, l.withCtx)(() => [
+                                                (0, l.createElementVNode)('div', { class: "ws-sub-section-content" }, '... (内容待实现) ...')
+                                            ]),
+                                            _: 2
+                                        }, 1032, ['title', 'summary-details'])
+                                    )), 128))
+                                    : ((0, l.openBlock)(), (0, l.createElementBlock)('p', { key: 1, class: "empty-state-text" }, "(空)"))
+                            ])
+                        ]),
+                        _: 1
+                    })
+                )
+            }
+        });
+        const WsFatesStyled = (0, f.A(WsFates, [['__scopeId', 'data-v-wushuang-char']]);
+
+        // [!] 天下闻组件
+        const WsNews = (0, l.defineComponent)({
+            __name: 'WsNews',
+            setup() {
+                const { statData: e } = useStatData();
+                const t = (0, l.computed)(() => String(r(e.value, '天下闻.奇闻', ['（暂无奇闻）'])[0]).replace(/\\n/g, '<br>'));
+                const a = (0, l.computed)(() => String(r(e.value, '天下闻.当前剧情', ['（暂无剧情）'])[0]));
+                
+                return (e, n) => (
+                    (0, l.createBlock)(k, { title: "天下闻", icon: "📰" }, {
+                        default: (0, l.withCtx)(() => [
+                            (0, l.createElementVNode)('div', { class: "ws-section-content no-padding" }, [
+                                (0, l.createBlock)(k, { title: "奇闻", variant: 'sub-section', "default-open": !0 }, {
+                                    default: (0, l.withCtx)(() => [
+                                        (0, l.createElementVNode)('div', { 
+                                            class: "ws-sub-section-content",
+                                            innerHTML: (0, l.unref)(t)
+                                        }, null, 8, ["innerHTML"])
+                                    ]),
+                                    _: 1
+                                }),
+                                (0, l.createBlock)(k, { title: "当前剧情", variant: 'sub-section', "default-open": !0 }, {
+                                    default: (0, l.withCtx)(() => [
+                                        (0, l.createElementVNode)('div', { 
+                                            class: "ws-sub-section-content",
+                                            textContent: (0, l.toDisplayString)((0, l.unref)(a))
+                                        }, null, 8, ["textContent"])
+                                    ]),
+                                    _: 1
+                                })
+                            ])
+                        ]),
+                        _: 1
+                    })
+                )
+            }
+        });
+        const WsNewsStyled = (0, f.A)(WsNews, [['__scopeId', 'data-v-wushuang-char']]);
+
+        // --- [ 5. 主应用 (App) ] ---
+        
+        const Pa = { class: 'layout' };
+        const Ha = (0, l.defineComponent)({
+            __name: 'App',
+            setup(e) {
+                // 加载数据
+                const { loading: t, error: a } = useStatData();
+                
+                return (e, n) => (
+                    (0, l.openBlock)(), (0, l.createElementBlock)('div', Pa, [
+                        (0, l.createVNode)(WsHeaderStyled),
+                        (0, l.createVNode)(WsWorldStyled),
+                        
+                        (0, l.unref)(t) ? ((0, l.openBlock)(), (0, l.createElementBlock)('p', { key: 0, class: "empty-state-text" }, "正在加载..."))
+                        : (0, l.unref)(a) ? ((0, l.openBlock)(), (0, l.createElementBlock)('p', { key: 1, class: "empty-state-text" }, "加载出错: " + (0, l.toDisplayString)((0, l.unref)(a)), 1))
+                        : ((0, l.openBlock)(), (0, l.createElementBlock)(l.Fragment, { key: 2 }, [
+                            (0, l.createVNode)(WsProtagonistStyled),
+                            (0, l.createVNode)(WsHangnangStyled),
+                            (0, l.createVNode)(WsFatesStyled),
+                            (0, l.createVNode)(WsNewsStyled)
+                        ], 64))
+                    ])
+                )
+            }
+        });
+        
+        // [!] 我们的主应用组件
+        const Wa = (0, f.A)(Ha, [['__scopeId', 'data-v-4aab5234']]); // [!] 复用你的Vue示例的主布局CSS
+        
+        // --- [ 6. 启动器 (和你“正确”示例一致) ] ---
+        
+        const Ra = e(); // createPinia()
+        $(() => {
+            console.log("--- [无双志 Vue版 v26] 启动 ---");
+            const e = (0, l.createApp)(Wa); // createApp(App)
+            e.use(Ra); // use(pinia)
+            e.mount('#app'); // 挂载
+        });
+
+    </script>
+    
+    <style>
+        /* --- [ CSS (v26) ] --- */
+        
+        /* [!] A. 复制自你“正确”示例的核心CSS (必须) */
+        
+        /* 基础组件: CommonStatus */
+        .details-status[data-v-6dac0e4c]{margin-bottom:6px;border:1px solid var(--theme-border-light,#d3c5b3);border-radius:4px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:all .3s ease-in-out}
+        .details-status[data-v-6dac0e4c]:hover{transform:translateY(-3px);box-shadow:0 6px 15px rgba(0,0,0,.25)}
+        .details-status.locked .summary[data-v-6dac0e4c]{background-color:var(--theme-disabled-bg,#e8e4e0);color:var(--theme-disabled-text,#b5aaa2);cursor:not-allowed}
+        .details-status.locked .summary .icon-star[data-v-6dac0e4c]{color:var(--theme-disabled-text,#b5aaa2)}
+        .summary[data-v-6dac0e4c]{font-family:"Cinzel",serif;font-weight:700;color:var(--theme-text-tertiary,#5d4037);background-color:var(--theme-title-bg,#d7c8b6);padding:4px 15px;cursor:pointer;list-style:none;border-bottom:1px solid var(--theme-border-dark,#c6b8a5);text-align:left;transition:background-color .2s ease,color .2s ease}
+        .summary[data-v-6dac0e4c]:hover{background-color:var(--theme-title-bg-hover,#cbb8a5);color:var(--theme-text-primary,#4a3b31)}
+        .is-open .summary[data-v-6dac0e4c]{background-color:var(--theme-open-bg,#bfa996);border-bottom-color:var(--theme-open-border-color,#a39281)}
+        .summary.has-wrapped-summary[data-v-6dac0e4c]{padding-bottom:8px}
+        .summary-main-line[data-v-6dac0e4c]{display:flex;align-items:center;width:100%}
+        .icon-star[data-v-6dac0e4c]{font-size:1.1em;color:var(--theme-star-inactive,#a39281);text-shadow:none;margin-right:12px;flex-shrink:0;transform-origin:center center;transition:transform .4s cubic-bezier(0.68,-0.55,0.27,1.55),color .4s ease,text-shadow .4s ease}
+        .icon-star.is-open[data-v-6dac0e4c]{transform:rotate(360deg);color:var(--theme-star-active,#f7d75a);text-shadow:0 0 3px hsla(0,0%,100%,.8),0 0 6px var(--theme-star-active,#f7d75a),0 0 10px #e5a50a}
+        .summary-title[data-v-6dac0e4c]{flex:1}
+        .summary-details[data-v-6dac0e4c]{margin-left:auto;padding-right:15px;font-family:"Noto Sans SC","Courier New",monospace;font-weight:500;font-size:.8em;color:var(--theme-text-secondary,#6a514d);letter-spacing:.5px;text-shadow:0 0 1px rgba(0,0,0,.05);align-self:center;flex-shrink:0}
+        .summary-wrapped-details[data-v-6dac0e4c]{margin-top:6px;padding-left:22px;padding-right:10px;font-family:"Noto Sans SC","Courier New",monospace;font-weight:500;font-size:.8em;color:var(--theme-text-secondary,#6a514d);letter-spacing:.5px;text-shadow:0 0 1px rgba(0,0,0,.05);line-height:1.4;word-break:auto-phrase}
+        .arrow-toggle[data-v-6dac0e4c]{transition:transform .2s ease-in-out;font-size:.8em;padding-left:5px;margin-left:auto;flex-shrink:0}
+        .arrow-toggle.rotated[data-v-6dac0e4c]{transform:rotate(90deg)}
+        .details-content[data-v-6dac0e4c]{background-color:var(--theme-background-tertiary,#fdfaf5);opacity:var(--theme-background-tertiary-opacity,.9);transition:height .2s ease-in-out;overflow:hidden}
+        .details-content-inner[data-v-6dac0e4c]{padding:15px;text-align:left;font-size:.9em}
+        .collapse-enter-active[data-v-6dac0e4c],.collapse-leave-active[data-v-6dac0e4c]{transition:height .2s ease-in-out;overflow:hidden}
+        .collapse-enter-from[data-v-6dac0e4c],.collapse-leave-to[data-v-6dac0e4c]{height:0 !important}
+        .details-sub-section .details-content-inner[data-v-6dac0e4c]{padding-top:5px;padding-bottom:5px}
+        .details-entry .summary[data-v-6dac0e4c]{padding-top:.8px;padding-bottom:.8px;font-size:.9em}
+        .details-entry .details-content-inner[data-v-6dac0e4c]{padding:10px 15px}
+
+        /* 基础布局: App */
+        .layout[data-v-4aab5234]{display:flex;flex-direction:column;padding:15px;background-color:var(--theme-background,#f0e6d2);opacity:var(--theme-background-opacity,1);border:var(--theme-main-border-width,2px) solid var(--theme-main-border,#785a4e);border-radius:8px;overflow:hidden}
+        
+        /* 基础组件: WorldStatus */
+        .world-status[data-v-77b8dafd]{display:flex;flex-direction:column;gap:8px;background-color:var(--theme-background-secondary,#e8ddcb);padding:10px 15px;margin-bottom:15px;border:1px solid var(--theme-border-dark,#c6b8a5);border-radius:4px;box-shadow:0 2px 5px rgba(0,0,0,.1);transition:transform .2s ease-in-out,box-shadow .2s ease-in-out}
+        .world-status[data-v-77b8dafd]:hover{transform:translateY(-3px);box-shadow:0 4px 10px rgba(0,0,0,.2)}
+        .world-info[data-v-77b8dafd]{margin:0;display:flex;align-items:center;gap:6px;line-height:1.6}
+        .info-icon[data-v-77b8dafd]{flex-shrink:0;line-height:1}
+        .info-label[data-v-77b8dafd]{font-weight:500;color:var(--theme-text-primary,#4a3b31);flex-shrink:0;line-height:1}
+
+        /* [!] B. “无双志”的特定中式风格 (新) */
+        
+        /* 覆盖变量，实现我们的“羊皮纸”风格 */
+        :root {
+            --theme-background: #f5eeda;
+            --theme-main-border: #c9b89a;
+            --theme-background-secondary: #f8f3e8;
+            --theme-border-dark: #dcd0b8;
+            --theme-title-bg: #f8f3e8;
+            --theme-title-bg-hover: #f5f1eb;
+            --theme-open-bg: #f0e9d9;
+            --theme-open-border-color: #c9b89a;
+            --theme-background-tertiary: #fdfaf2;
+            --theme-text-primary: #3a2c1a;
+            --theme-text-secondary: #6a4f3a;
+            --theme-text-tertiary: #594228;
+            --theme-star-inactive: #a39281;
+            --theme-star-active: #f7d75a;
+        }
+
+        /* 基础字体和通用样式 */
+        * { box-sizing: border-box; }
+        .layout[data-v-4aab5234] {
+            font-family: 'EB Garamond', 'Noto Sans SC', serif; 
+            color: #4a3b2a;
+        }
+        .value-main { font-weight: 500; color: #3a2c1a; }
+        .property-name { font-weight: bold; color: #594228; }
+        .empty-state-text { color: #888; font-style: italic; opacity: 0.8; padding: 15px;}
+        
+        /* 头部和诗 */
+        .scroll-header[data-v-wushuang-header] {
+            display: flex;
+            justify-content: space-between; 
+            align-items: flex-start;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--theme-main-border);
+            margin-bottom: 20px;
+        }
+        .master-ui-title h1[data-v-wushuang-header] {
+            font-family: 'Cinzel Decorative', serif; 
+            font-size: 2.8em; font-weight: 700; margin: 0; color: #594228;
+            text-shadow: none; 
+        }
+        .scroll-poem-container h1[data-v-wushuang-header] {
+            font-family: 'Cinzel Decorative', serif; 
+            font-size: 1.8em; 
+            color: #594228;
+            text-shadow: none; 
+        }
+        .scroll-poem-container[data-v-wushuang-header] { text-align: right; }
+        .poem-grid[data-v-wushuang-header] {
+            display: grid; grid-template-columns: auto auto; 
+            gap: 5px 20px; padding: 10px 0;
+            font-family: 'Noto Sans SC', serif; 
+            font-size: 1.0em; 
+            color: #6a4f3a;
+            text-align: right; 
+        }
+        .poem-grid p[data-v-wushuang-header] { margin: 0; }
+        
+        /* 角色/行囊的内部样式 */
+        .ws-section-content[data-v-wushuang-char] { padding: 15px; }
+        .ws-section-content.no-padding[data-v-wushuang-char] { padding: 0; }
+        .ws-sub-section-content[data-v-wushuang-char] { padding: 10px 15px; }
+        .char-property-grid[data-v-wushuang-char] {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 8px 15px;
+            align-items: center;
+        }
+        .char-icon[data-v-wushuang-char] { opacity: 0.8; color: #6a4f3a; }
+        .item-row[data-v-wushuang-char] {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(74,59,42,0.1);
+        }
+        hr[data-v-wushuang-char] { 
+            border: 0; 
+            height: 1px; 
+            background-image: linear-gradient(to right, transparent, rgba(74,59,42,0.2), transparent); 
+            margin: 15px 0; 
+        }
+        h4[data-v-wushuang-char] {
+            font-family: 'Cinzel', serif;
+            color: #594228;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+</body>
