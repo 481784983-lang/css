@@ -4,7 +4,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Merriweather:ital,wght@0,400;1,400&family=Noto+Sans+SC:wght@400;500;700&family=Almendra+SC&family=Cinzel+Decorative:wght@700&family=EB+Garamond&family=Josefin+Sans&family=Playfair+Display&family=Roboto+Slab&family=Spectral&display=swap" rel="stylesheet">
 
 <style>
-    /* --- [ 1. 卷轴 UI CSS (v20 - 羊皮纸 + 平滑动画) ] --- */
+    /* --- [ 1. 卷轴 UI CSS (v21 - 已清理无效空格) ] --- */
     
     #chessboard-container-wrapper {
         font-family: 'Noto Sans SC', 'Merriweather', serif; 
@@ -209,7 +209,7 @@
     (function() {
         if (window.MASTER_UI_INITIALIZED) return;
         window.MASTER_UI_INITIALIZED = true;
-        console.log("--- [天下为棋 Master UI v20 羊皮纸+动画版] 脚本初始化 ---"); 
+        console.log("--- [天下为棋 Master UI v21 清理版] 脚本初始化 ---"); 
 
         // --- [ 1. GLOBAL HELPERS ] ---
         window.last_stat_data = {}; 
@@ -285,7 +285,7 @@
             }
         };
 
-        // --- [ 3. 日常 UI 渲染器 (v20 - 逻辑同v19) ] ---
+        // --- [ 3. 日常 UI 渲染器 (v21 - 逻辑同v19) ] ---
         
         const emptyIcon = `<p class=\"empty-state-text\">(空)</p>`;
         const emptyVal = "---";
@@ -489,7 +489,7 @@
             </div>`;
         }
 
-        // --- [ 5. 主渲染路由 (v20 - 逻辑同v19) ] ---
+        // --- [ 5. 主渲染路由 (v21 - 逻辑同v19) ] ---
         function Master_Render_UI(data) {
             if (!data || typeof data !== 'object') {
                 console.warn("[MasterUI] Master_Render_UI 收到无效数据。");
@@ -540,7 +540,7 @@
 
         // --- [ 6. MASTER INITIALIZATION ] ---
         async function Master_Init() {
-            console.log("--- [天下为棋 Master UI v20] Master_Init 启动 ---");
+            console.log("--- [天下为棋 Master UI v21] Master_Init 启动 ---");
             try {
                 const hasChat = typeof getChatMessages === 'function' && typeof getCurrentMessageId === 'function';
                 const msgs = hasChat ? await getChatMessages(getCurrentMessageId()) : []; 
