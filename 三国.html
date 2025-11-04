@@ -4,7 +4,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Merriweather:ital,wght@0,400;1,400&family=Noto+Sans+SC:wght@400;500;700&family=Almendra+SC&family=Cinzel+Decorative:wght@700&family=EB+Garamond&family=Josefin+Sans&family=Playfair+Display&family=Roboto+Slab&family=Spectral&display=swap" rel="stylesheet">
 
 <style>
-    /* --- [ 1. 卷轴 UI CSS (v18.2) ] --- */
+    /* --- [ 1. 卷轴 UI CSS (v20 - 羊皮纸 + 平滑动画) ] --- */
     
     #chessboard-container-wrapper {
         font-family: 'Noto Sans SC', 'Merriweather', serif; 
@@ -12,105 +12,75 @@
     }
     .hidden { display: none !important; }
 
-    /* [新] 统一卷轴容器 */
+    /* [!] 1. 恢复羊皮纸风格 */
     #chessboard-container-wrapper {
-        max-width: 1000px; /* 卷轴最大宽度 */
-        min-height: 800px; /* 卷轴最小高度 */
+        max-width: 1000px; 
         margin: 15px auto; 
-        padding: 60px 140px; 
+        padding: 30px 40px; 
         box-sizing: border-box; 
         
-        background-color: #f5eeda; 
-        background-image: url('https://raw.githubusercontent.com/481784983-lang/my-silly-fonts/main/ChatGPT%20Image%202025%E5%B9%B411%E6%9C%884%E6%97%A5%2021_47_32.png'); 
-        background-size: 100% 100%; 
-        background-repeat: no-repeat;
+        background-color: #f5eeda; /* [!] 羊皮纸主背景色 */
         
         font-family: 'EB Garamond', 'Noto Sans SC', serif; 
-        color: #4a3b2a; 
+        color: #4a3b2a; /* [!] 羊皮纸默认文字颜色 */
         
         transition: all 0.8s ease;
-        border-radius: 12px; 
+        border-radius: 8px; 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+        border: 1px solid #c9b89a; /* [!] 羊皮纸边框色 */
     }
 
     #chessboard-container-wrapper div, #chessboard-container-wrapper p, #chessboard-container-wrapper span, 
     #chessboard-container-wrapper summary, #chessboard-container-wrapper details {
         font-family: inherit;
-        color: #4a3b2a; 
+        color: #4a3b2a; /* [!] 统一文字颜色 */
     }
     .value-main { font-weight: 500; color: #3a2c1a; }
-    .property-name { font-weight: bold; color: #6a4f3a; }
-    .empty-state-text { color: #6a4f3a; font-style: italic; opacity: 0.8; }
+    .property-name { font-weight: bold; color: #594228; }
+    .empty-state-text { color: #888; font-style: italic; opacity: 0.8; }
 
-    /* [!] 主题定义 (v18.2) */
-    
+    /* [!] 2. 移除所有主题动画和发光效果 (同v19) */
     #chessboard-container-wrapper.theme-imperial { 
-        --theme-accent-glow: #a8904a; 
         --theme-font-title: 'Cinzel Decorative', serif;
         --theme-font-header: 'Playfair Display', serif;
         font-family: 'Playfair Display', serif; 
-        animation: regal-pulse-imperial 8s infinite ease-in-out;
     }
-    
     #chessboard-container-wrapper.theme-elven { 
-        --theme-accent-glow: #00ff7f; 
         --theme-font-title: 'Josefin Sans', sans-serif;
         --theme-font-header: 'EB Garamond', serif;
         font-family: 'EB Garamond', serif; 
-        animation: shimmer-glow-elven 6s infinite ease-in-out; 
     }
-    
     #chessboard-container-wrapper.theme-draconic { 
-        --theme-accent-glow: #D4AF37; 
         --theme-accent-main: #8b0000; 
         --theme-font-title: 'Almendra SC', serif;
         --theme-font-header: 'Cinzel', serif;
         font-family: 'Cinzel Decorative', cursive; 
-        animation: pulse-glow-draconic 4s infinite ease-in-out;
     }
     #chessboard-container-wrapper.theme-draconic .master-ui-title h1 { color: var(--theme-accent-main, #8b0000); }
     #chessboard-container-wrapper.theme-draconic .scroll-header { border-bottom-color: var(--theme-accent-main, #8b0000); }
     
     #chessboard-container-wrapper.theme-abyss { 
-        --theme-accent-glow: #8a2be2;
         --theme-accent-main: #4b0082;
         --theme-font-title: 'Cinzel Decorative', serif;
         --theme-font-header: 'Spectral', serif;
         font-family: 'Almendra SC', serif; 
-        animation: pulse-glow-abyss 4s infinite ease-in-out; 
     }
     #chessboard-container-wrapper.theme-abyss .master-ui-title h1 { color: var(--theme-accent-main, #4b0082); }
     #chessboard-container-wrapper.theme-abyss .scroll-header { border-bottom-color: var(--theme-accent-main, #4b0082); }
-
-    @keyframes regal-pulse-imperial {
-        0%, 100% { box-shadow: 0 0 20px #a8904a; }
-        50% { box-shadow: 0 0 35px #a8904a; }
-    }
-    @keyframes shimmer-glow-elven {
-        0%, 100% { box-shadow: 0 0 25px rgba(0, 255, 127, 0.4); }
-        50% { box-shadow: 0 0 35px rgba(0, 255, 127, 0.6); }
-    }
-    @keyframes pulse-glow-draconic {
-        0%, 100% { box-shadow: 0 0 20px #8b0000, 0 0 30px #6a0000; }
-        50% { box-shadow: 0 0 35px #c0392b, 0 0 45px #8b0000; }
-    }
-    @keyframes pulse-glow-abyss { 
-        0%, 100% { box-shadow: 0 0 25px #8a2be2, 0 0 35px #4b0082; } 
-        50% { box-shadow: 0 0 40px #9400d3, 0 0 55px #4b0082; } 
-    }
 
     .scroll-header {
         display: flex;
         justify-content: space-between; 
         align-items: flex-start;
         padding-bottom: 15px;
-        border-bottom: 2px solid #8a6f4a; 
+        border-bottom: 2px solid #c9b89a; /* [!] 羊皮纸边框色 */
         margin-bottom: 20px;
     }
 
     .master-ui-title h1 {
         font-family: var(--theme-font-title, 'Cinzel Decorative', serif); 
         font-size: 2.8em; font-weight: 700; margin: 0; color: #594228;
-        text-shadow: 0 0 8px var(--theme-accent-glow, #a8904a), 1px 1px 2px rgba(0,0,0,0.2);
+        text-shadow: none; 
     }
     .master-ui-title { padding: 0; }
 
@@ -118,7 +88,7 @@
         font-family: var(--theme-font-title, 'Cinzel Decorative', serif); 
         font-size: 1.8em; 
         color: #594228;
-        text-shadow: 0 0 8px var(--theme-accent-glow, #a8904a), 1px 1px 2px rgba(0,0,0,0.2);
+        text-shadow: none; 
     }
     .scroll-poem-container { text-align: right; }
     
@@ -132,60 +102,100 @@
     }
     .poem-grid p { margin: 0; }
 
-    .blocks-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr; 
-        grid-template-rows: auto auto;    
-        gap: 20px; 
-    }
-
+    /* [!] 3. 羊皮纸卡片 (Section) 样式 */
     details.section {
-        margin: 0; 
-        border: 1px solid #c9b89a; 
-        border-radius: 6px;
-        background: #fdfaf2; 
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        overflow: hidden;
+        margin: 0 0 15px 0; 
+        border: 1px solid #dcd0b8; /* [!] 浅羊皮纸边框 */
+        border-radius: 6px; 
+        background: #fdfaf2; /* [!] 浅羊皮纸背景 (卡片) */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        overflow: hidden; /* [!] 必须加，否则动画会溢出 */
+        transition: all 0.3s ease;
+    }
+    details.section:hover {
+        border-color: #c9b89a;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
     }
     
     details.section > summary {
-        background-color: #f8f3e8; 
-        border-bottom: 1px solid #c9b89a;
+        background-color: #f8f3e8; /* [!] 标题栏背景色 */
+        border-bottom: 1px solid #dcd0b8;
         font-family: var(--theme-font-header, 'Cinzel', serif);
         color: #594228;
         font-weight: 700;
+        font-size: 1.15em; 
         padding: 12px 15px;
         display: flex; justify-content: space-between; align-items: center; list-style: none; cursor: pointer; transition: all 0.2s ease;
     }
-    details.section > summary:hover { background: #f0e9d9; }
+    
+    details[open] > summary {
+        background-color: #f0e9d9;
+        border-bottom-color: #c9b89a;
+    }
+    
+    details.section > summary:hover { background: #f5f1eb; } 
     details > summary::-webkit-details-marker { display: none; }
     details > summary .summary-icon { margin-right: 10px; opacity: 0.8; }
-    .arrow-toggle { transition: transform 0.3s ease; margin-left: auto;}
+    .arrow-toggle { transition: transform 0.3s ease; margin-left: auto; font-family: sans-serif; }
     details[open] > summary .arrow-toggle { transform: rotate(90deg); }
 
+    /* [!] 4. 关键：平滑动画 + 滚动条 */
+    
+    /* 内容区的基础样式 */
     .section-content {
-        background-color: transparent; 
-        padding: 15px;
-        min-height: 250px; 
-        max-height: 350px; 
-        overflow-y: auto;  
+        background-color: #fdfaf2; /* 匹配卡片背景 */
         border-top: none;
+        
+        /* 关键：为滚动条设置高度 */
+        max-height: 350px; /* 这是你原始代码中的高度，用于开启滚动条 */
+        overflow-y: auto;  
+        
+        /* 动画属性 */
+        transition: max-height 0.8s ease-in, padding 0.8s ease-in, transform 0.5s ease;
     }
+
+    /* 折叠状态 (默认) */
+    details.section:not([open]) > .section-content {
+        max-height: 0;
+        overflow: hidden; /* 隐藏内容 */
+        padding-top: 0;
+        padding-bottom: 0;
+        transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+    }
+    
+    /* 展开状态 (覆盖) */
+    details[open].section > .section-content {
+        padding: 15px;
+        max-height: 350px; /* 动画展开到这个高度 */
+    }
+
+
+    /* [!] 5. 子区域和世界信息 (羊皮纸配色) */
     details.sub-section { 
-        background: #fAf6ed; 
-        border-color: #c9b89a;
+        background: #faf6ed; /* [!] 子区域背景色 */
+        border-color: #e0d8c7; 
+        border-radius: 4px;
+        margin-top: 5px;
     }
-    details.sub-section > summary { background-color: rgba(0,0,0,0.05); }
+    details.sub-section > summary { background-color: rgba(232, 222, 203, 0.4); } 
     .sub-section-content { background-color: transparent; }
 
-    hr { border: 0; height: 1px; background-image: linear-gradient(to right, transparent, rgba(74,59,42,0.3), transparent); margin: 15px 0; }
+    hr { border: 0; height: 1px; background-image: linear-gradient(to right, transparent, rgba(74,59,42,0.2), transparent); margin: 15px 0; }
 
-    .world-info-box { background-color: #fdfaf2; padding: 12px 18px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #c9b89a; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 15px; align-items: center; }
+    .world-info-box { 
+        background-color: #f8f3e8; /* [!] 标题栏同色 */
+        padding: 12px 18px; 
+        border-radius: 6px; 
+        margin-bottom: 20px; 
+        border: 1px solid #dcd0b8; 
+        display: grid; 
+        grid-template-columns: 1fr 1fr; 
+        gap: 8px 15px; 
+        align-items: center; 
+    }
     .char-property-grid .char-icon { opacity: 0.8; color: #6a4f3a; }
     .item-row { border-bottom: 1px solid rgba(74,59,42,0.1); }
     .char-favor-bar-container { background-color: rgba(0,0,0,0.1); border-color: #c9b89a; }
-
-    /* --- [ 战斗 UI 已删除 ] --- */
 
 </style>
 
@@ -199,7 +209,7 @@
     (function() {
         if (window.MASTER_UI_INITIALIZED) return;
         window.MASTER_UI_INITIALIZED = true;
-        console.log("--- [天下为棋 Master UI v18.3 卷轴重构] 脚本初始化 ---"); 
+        console.log("--- [天下为棋 Master UI v20 羊皮纸+动画版] 脚本初始化 ---"); 
 
         // --- [ 1. GLOBAL HELPERS ] ---
         window.last_stat_data = {}; 
@@ -275,7 +285,7 @@
             }
         };
 
-        // --- [ 3. 日常 UI 渲染器 (v18) ] ---
+        // --- [ 3. 日常 UI 渲染器 (v20 - 逻辑同v19) ] ---
         
         const emptyIcon = `<p class=\"empty-state-text\">(空)</p>`;
         const emptyVal = "---";
@@ -479,46 +489,7 @@
             </div>`;
         }
 
-        function renderDailyUI(data) {
-            const wrapper = document.getElementById('chessboard-container-wrapper');
-            if (!wrapper) { console.error("[MasterUI] Daily UI wrapper not found!"); return; }
-
-            const factionPath = '主角.势力[0]'; 
-            const faction = SafeGetValue(data, factionPath, '群雄'); 
-            let themeClass = 'theme-imperial'; 
-            if (faction.includes('汉') || faction.toLowerCase().includes('han')) { themeClass = 'theme-draconic'; } 
-            else if (faction.includes('魏') || faction.toLowerCase().includes('wei')) { themeClass = 'theme-abyss'; } 
-            else if (faction.includes('吴') || faction.toLowerCase().includes('wu')) { themeClass = 'theme-elven'; }
-            wrapper.className = `status-container ${themeClass}`;
-            
-            const worldHtml = populateWorldInfo(SafeGetValue(data, '世界', {}));
-            const protagonistHtml = populateProtagonist(SafeGetValue(data, '主角', {}));
-            const hangnangHtml = populateHangnang(SafeGetValue(data, '行囊', {}));
-            const fatesHtml = populateFates(data);
-            const newsData = SafeGetValue(data, '天下闻', {}); 
-            const newsHtml = populateNews(newsData);
-            const poemHtml = populateYongtan(newsData); 
-
-            wrapper.innerHTML = `
-                <div class="scroll-header">
-                    <div class="master-ui-title"><h1>无双志</h1></div>
-                    ${poemHtml} 
-                </div>
-                
-                ${worldHtml} 
-
-                <div id="chessboard-content-body" class="blocks-container">
-                    ${protagonistHtml}
-                    ${hangnangHtml}
-                    ${fatesHtml}
-                    ${newsHtml}
-                </div>
-            `;
-        }
-
-        /* --- [ 战斗 UI 渲染器 已删除 ] --- */
-
-        // --- [ 5. 主渲染路由 ] ---
+        // --- [ 5. 主渲染路由 (v20 - 逻辑同v19) ] ---
         function Master_Render_UI(data) {
             if (!data || typeof data !== 'object') {
                 console.warn("[MasterUI] Master_Render_UI 收到无效数据。");
@@ -527,18 +498,49 @@
             window.last_stat_data = data; 
             const uiMode = SafeGetValue(data, 'UI状态.当前界面[0]', '日常');
             
-            // 只切换日常UI的显示
             setToggle('chessboard-container-wrapper', uiMode === '日常');
 
             if (uiMode === '日常') {
-                renderDailyUI(data); 
+                const wrapper = document.getElementById('chessboard-container-wrapper');
+                if (!wrapper) { console.error("[MasterUI] Daily UI wrapper not found!"); return; }
+
+                const factionPath = '主角.势力[0]'; 
+                const faction = SafeGetValue(data, factionPath, '群雄'); 
+                let themeClass = 'theme-imperial'; 
+                if (faction.includes('汉') || faction.toLowerCase().includes('han')) { themeClass = 'theme-draconic'; } 
+                else if (faction.includes('魏') || faction.toLowerCase().includes('wei')) { themeClass = 'theme-abyss'; } 
+                else if (faction.includes('吴') || faction.toLowerCase().includes('wu')) { themeClass = 'theme-elven'; }
+                wrapper.className = `status-container ${themeClass}`;
+                
+                const worldHtml = populateWorldInfo(SafeGetValue(data, '世界', {}));
+                const protagonistHtml = populateProtagonist(SafeGetValue(data, '主角', {}));
+                const hangnangHtml = populateHangnang(SafeGetValue(data, '行囊', {}));
+                const fatesHtml = populateFates(data);
+                const newsData = SafeGetValue(data, '天下闻', {}); 
+                const newsHtml = populateNews(newsData);
+                const poemHtml = populateYongtan(newsData); 
+
+                wrapper.innerHTML = `
+                    <div class="scroll-header">
+                        <div class="master-ui-title"><h1>无双志</h1></div>
+                        ${poemHtml} 
+                    </div>
+                    
+                    ${worldHtml} 
+
+                    <div id="chessboard-content-body"> 
+                        ${protagonistHtml}
+                        ${hangnangHtml}
+                        ${fatesHtml}
+                        ${newsHtml}
+                    </div>
+                `;
             } 
-            /* '战斗' 模式无操作 */
         }
 
         // --- [ 6. MASTER INITIALIZATION ] ---
         async function Master_Init() {
-            console.log("--- [天下为棋 Master UI v18.3] Master_Init 启动 ---");
+            console.log("--- [天下为棋 Master UI v20] Master_Init 启动 ---");
             try {
                 const hasChat = typeof getChatMessages === 'function' && typeof getCurrentMessageId === 'function';
                 const msgs = hasChat ? await getChatMessages(getCurrentMessageId()) : []; 
@@ -556,8 +558,6 @@
                 Master_Render_UI(mergedData);
                 console.log("--- [MasterUI] Master_Init 完成 ---");
                 
-                /* 战斗点击事件监听器 已删除 */
-
             } catch (e) {
                 console.error('CRITICAL Error during [MasterUI] Master_Init:', e);
             }
