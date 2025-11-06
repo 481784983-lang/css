@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>无双志 — Vue UI</title>
+
+  </head>
+
+<body>
+
+  <div id="app">
+    <h3 style="color: #8c3333; font-family: sans-serif; padding: 20px;">
+      正在加载 无双志 UI...
+    </h3>
+  </div>
+
+  <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_5058414_apch79jw7rj.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Merriweather:ital,wght@0,400;1,400&family=Noto+Sans+SC:wght@400;500;700&family=Almendra+SC&family=Cinzel+Decorative:wght@700&family=EB+Garamond&family=Josefin+Sans&family=Playfair+Display&family=Roboto+Slab&family=Spectral&display=swap">
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js" async></script>
+  <script src="https://cdn.jsdelivr.net/npm/pinia@2/dist/pinia.iife.prod.js" async></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js" async></script>
+
+  <style>
+    /* --- 1. 全局 CSS (来自 main.css) --- */
+    :root {
+      /* “水墨暗红”中国风主题 */
+      --theme-background: #fcfaf5;
+      --theme-background-secondary: #f9f5f0;
+      --theme-background-tertiary: #fdfcf9;
+      --theme-main-border: #5a4a42;
+      --theme-border-dark: #dcd5c8;
+      --theme-border-light: #e7e0d7;
+      --theme-text-primary: #3a332d;
+      --theme-text-secondary: #6e5e54;
+      --theme-text-tertiary: #8c3333;
+      --theme-title-bg: #f9f5f0;
+      --theme-title-bg-hover: #f2ece4;
+      --theme-open-bg: #e9e2d9;
+      --theme-open-border-color: #5a4a42;
+      --theme-star-active: #f7d75a;
+      --theme-star-inactive: #a39a90;
+      --theme-disabled-bg: #e8e4e0;
+      --theme-disabled-text: #b5aaa2;
+      --theme-background-tertiary-opacity: 0.9;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    /* 基础页面背景 (模仿旧版) */
+    body {
+      font-family: 'EB Garamond', 'Noto Sans SC', serif;
+      color: #4a3b2a;
+      background: #f7f3ee;
+      padding: 20px;
+    }
+    .value-main {
+      font-weight: 500;
+      color: var(--theme-text-primary);
+    }
+    .property-name {
+      font-weight: bold;
+      color: var(--theme-text-tertiary);
+    }
+    .empty-state-text {
+      color: #888;
+      font-style: italic;
+      opacity: 0.8;
+      padding: 15px;
+    }
+
+    /* --- 2. App.vue CSS --- */
+    .layout[data-v-app] {
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      background-color: var(--theme-background);
+      opacity: var(--theme-background-opacity, 1);
+      border: var(--theme-main-border-width, 2px) solid var(--theme-main-border);
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    /* --- 3. CommonStatus.vue CSS --- */
+    .details-status[data-v-common-status] {
+      margin-bottom: 6px;
+      border: 1px solid var(--theme-border-light);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,.1);
+      transition: all .3s ease-in-out;
+    }
+    .details-status[data-v-common-status]:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,.25);
+    }
+    .details-status.locked .summary[data-v-common-status] {
+      background-color: var(--theme-disabled-bg);
+      color: var(--theme-disabled-text);
+      cursor: not-allowed;
+    }
+    .details-status.locked .summary .icon-star[data-v-common-status] {
+      color: var(--theme-disabled-text);
+    }
+    .summary[data-v-common-status] {
+      font-family: "Cinzel", serif;
+      font-weight: 700;
+      color: var(--theme-text-tertiary);
+      background-color: var(--theme-title-bg);
+      padding: 4px 15px;
+      cursor: pointer;
+      list-style: none;
+      border-bottom: 1px solid var(--theme-border-dark);
+      text-align: left;
+      transition: background-color .2s ease, color .2s ease;
+    }
+    .summary[data-v-common-status]:hover {
+      background-color: var(--theme-title-bg-hover);
+      color: var(--theme-text-primary);
+    }
+    .is-open .summary[data-v-common-status] {
+      background-color: var(--theme-open-bg);
+      border-bottom-color: var(--theme-open-border-color);
+    }
+    .summary.has-wrapped-summary[data-v-common-status] {
+      padding-bottom: 8px;
+    }
+    .summary-main-line[data-v-common-status] {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .icon-star[data-v-common-status] {
+      font-size: 1.25em;
+      color: var(--theme-star-inactive);
+      text-shadow: none;
+      margin-right: 12px;
+      flex-shrink: 0;
+      transform-origin: center center;
+      transition: transform .4s cubic-bezier(0.68,-0.55,.27,1.55), color .4s ease, text-shadow .4s ease;
+      display: inline-block;
+      text-align: center;
+      width: 1.2em;
+      vertical-align: -0.15em;
+    }
+    .icon-star.is-open[data-v-common-status] {
+      transform: rotate(360deg);
+      color: var(--theme-star-active);
+      text-shadow: 0 0 3px hsla(0,0%,100%,.8), 0 0 6px var(--theme-star-active), 0 0 10px #e5a50a;
+    }
+    .summary-title[data-v-common-status] {
+      flex: 1;
+    }
+    .summary-details[data-v-common-status] {
+      margin-left: auto;
+      padding-right: 15px;
+      font-family: "Noto Sans SC", "Courier New", monospace;
+      font-weight: 500;
+      font-size: .8em;
+      color: var(--theme-text-secondary);
+      letter-spacing: .5px;
+      text-shadow: 0 0 1px rgba(0,0,0,.05);
+      align-self: center;
+      flex-shrink: 0;
+    }
+    .summary-wrapped-details[data-v-common-status] {
+      margin-top: 6px;
+      padding-left: 22px;
+      padding-right: 10px;
+      font-family: "Noto Sans SC", "Courier New", monospace;
+      font-weight: 500;
+      font-size: .8em;
+      color: var(--theme-text-secondary);
+      letter-spacing: .5px;
+      text-shadow: 0 0 1px rgba(0,0,0,.05);
+      line-height: 1.4;
+      word-break: auto-phrase;
+    }
+    .arrow-toggle[data-v-common-status] {
+      transition: transform .2s ease-in-out;
+      font-size: .8em;
+      padding-left: 5px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .arrow-toggle.rotated[data-v-common-status] {
+      transform: rotate(90deg);
+    }
+    .details-content[data-v-common-status] {
+      background-color: var(--theme-background-tertiary);
+      opacity: var(--theme-background-tertiary-opacity);
+      overflow: hidden;
+    }
+    .details-content-inner[data-v-common-status] {
+      padding: 15px;
+      text-align: left;
+      font-size: .9em;
+    }
+    .details-sub-section .details-content-inner[data-v-common-status] {
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+    .details-entry .summary[data-v-common-status] {
+      padding-top: .8px;
+      padding-bottom: .8px;
+      font-size: .9em;
+    }
+    .details-entry .details-content-inner[data-v-common-status] {
+      padding: 10px 15px;
+    }
+    .collapse-enter-active[data-v-common-status],
+    .collapse-leave-active[data-v-common-status] {
+      transition: height .2s ease-in-out;
+      overflow: hidden;
+    }
+    .collapse-enter-from[data-v-common-status],
+    .collapse-leave-to[data-v-common-status] {
+      height: 0 !important;
+    }
+
+    /* --- 4. WsHeader.vue CSS --- */
+    .scroll-header[data-v-header] {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--theme-main-border);
+      margin-bottom: 20px;
+    }
+    .master-ui-title h1[data-v-header] {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 2.8em;
+      font-weight: 700;
+      margin: 0;
+      color: var(--theme-text-tertiary);
+      text-shadow: none;
+    }
+    .scroll-poem-container h1[data-v-header] {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.8em;
+      color: var(--theme-text-tertiary);
+      text-shadow: none;
+    }
+    .scroll-poem-container[data-v-header] {
+      text-align: right;
+    }
+    .poem-grid[data-v-header] {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 5px 20px;
+      padding: 10px 0;
+      font-family: 'Noto Sans SC', serif;
+      font-size: 1.0em;
+      color: var(--theme-text-secondary);
+      text-align: right;
+    }
+    .poem-grid p[data-v-header] {
+      margin: 0;
+    }
+    
+    /* --- 5. WsWorld.vue CSS --- */
+    .world-status[data-v-world] {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background-color: var(--theme-background-secondary);
+      padding: 10px 15px;
+      margin-bottom: 15px;
+      border: 1px solid var(--theme-border-dark);
+      border-radius: 4px;
+      box-shadow: 0 2px 5px #0000001a;
+      transition: transform .2s ease-in-out,box-shadow .2s ease-in-out
+    }
+    .world-status[data-v-world]:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 10px #0003
+    }
+    .world-info[data-v-world] {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.6
+    }
+    .info-icon[data-v-world] {
+      flex-shrink: 0;
+      line-height: 1;
+      font-size: 1.2em;
+      width: 1.2em;
+      text-align: center;
+      vertical-align: -0.15em;
+      color: var(--theme-text-secondary);
+    }
+    .info-label[data-v-world] {
+      font-weight: 500;
+      color: var(--theme-text-primary);
+      flex-shrink: 0;
+      line-height: 1
+    }
+    .value-main[data-v-world] { 
+      font-weight: 500; 
+      color: var(--theme-text-primary); 
+    }
+    
+    
+    /* --- 6. Protagonist, Hangnang, Fates, News (共享的 CSS) --- */
+    .ws-section-content[data-v-char] { 
+      padding: 15px; 
+    }
+    .ws-section-content.no-padding[data-v-char] { 
+      padding: 0; 
+    }
+    .ws-sub-section-content[data-v-char] { 
+      padding: 10px 15px; 
+    }
+    .char-property-grid[data-v-char] {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 8px 15px;
+      align-items: center;
+    }
+    .char-icon[data-v-char] { 
+      opacity: .8; 
+      color: var(--theme-text-secondary);
+      font-size: 1.2em;
+      width: 1.2em;
+      text-align: center;
+      vertical-align: -0.15em;
+    }
+    .char-prop-name[data-v-char] {
+      font-weight: 700;
+      color: var(--theme-text-tertiary);
+    }
+    .char-prop-value[data-v-char] {
+        font-weight: 500; 
+        color: var(--theme-text-primary);
+    }
+    hr[data-v-char] {
+      border: 0;
+      height: 1px;
+      background-image: linear-gradient(to right, transparent, rgba(74,59,42,.2), transparent);
+      margin: 15px 0;
+    }
+    h4[data-v-char] {
+      font-family: 'Cinzel', serif;
+      color: var(--theme-text-tertiary);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .item-row[data-v-char] {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(74,59,42,.1);
+    }
+    .ws-sub-section-content[data-v-news-content] {
+      padding: 10px 15px; 
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+
+  <script>
+    // 立即执行函数 (IIFE), 避免污染全局
+    (function () {
+      
+      // [!!] 关键: 启动器 (Bootloader) [!!]
+      // 我们必须等待 Vue, Pinia, 和 Lodash 全部加载完毕
+      
+      let bootAttempts = 0;
+      const maxBootAttempts = 200; // 等待 2 秒钟 (200 * 10ms)
+
+      function checkLibsAndBoot() {
+        bootAttempts++;
+        
+        // 检查所有库是否都已在 window 上定义
+        if (window.Vue && window.Pinia && window._) {
+          // 成功! 库都已加载，启动 App
+          console.log('--- [无双志 传统版] 依赖库加载成功 ---');
+          mountVueApp();
+        } else if (bootAttempts > maxBootAttempts) {
+          // 超时
+          console.error('--- [无双志 传统版] 依赖库加载超时 ---');
+          var errorMsg = '错误: 依赖库加载超时。';
+          if (!window.Vue) errorMsg = '错误: Vue.js 未能加载。';
+          else if (!window.Pinia) errorMsg = '错误: Pinia.js 未能加载。';
+          else if (!window._) errorMsg = '错误: Lodash.js 未能加载。';
+          
+          var appDiv = document.getElementById('app');
+          if (appDiv) {
+            appDiv.innerHTML = '<h3 style=\"color: red; font-family: sans-serif;\">' + errorMsg + '</h3>';
+          }
+        } else {
+          // 库尚未加载，10 毫秒后重试
+          setTimeout(checkLibsAndBoot, 10);
+        }
+      }
+      
+      // [!!] 启动函数 [!!]
+      // 只有在 checkLibsAndBoot() 确认所有库都OK后，才会调用此函数
+      function mountVueApp() {
+        
+        // --- 1. 定义别名 ---
+        const { createApp, ref, computed, defineComponent, onMounted, onUnmounted, Transition } = window.Vue;
+        const { createPinia, defineStore } = window.Pinia;
+        const _ = window._;
+
+        // --- 2. Pinia Store (数据仓库) ---
+        const useStatDataStore = defineStore("statData", () => {
+          const statData = ref({});
+          const loading = ref(true);
+          const error = ref(null);
+
+          function loadData() {
+            try {
+              if (typeof getVariables === "function" && typeof getCurrentMessageId === "function") {
+                const vars = getVariables({ type: "message", message_id: getCurrentMessageId() }) || {};
+                const n = _.get(vars, "stat_data", {});
+                
+                // 允许空对象 {}
+                if (!n) { 
+                  throw new Error("获取的状态数据无效 (null or undefined)");
+                }
+                statData.value = n;
+                error.value = null;
+              } else {
+                console.warn("未找到宿主 (getVariables) 函数。UI将使用空数据。");
+                statData.value = {}; 
+              }
+            } catch (e) {
+              console.error("加载数据失败:", e);
+              error.value = e instanceof Error ? e.message : String(e);
+              statData.value = {}; 
+            } finally {
+              loading.value = false;
+            }
+          }
+          
+          const r = (path, def) => _.get(statData.value, path, def);
+          const c = (obj) => (obj && typeof obj === "object" ? _.omitBy(obj, (v, k) => k === "$meta" || k === "$__META_EXTENSIBLE__$") : {});
+          const s = (val) => (Array.isArray(val) ? (val.length === 0 || val[0] === "$__META_EXTENSIBLE__$" ? [] : val) : (val || ""));
+
+          return { statData, loading, error, loadData, r, c, s };
+        });
+
+        // --- 3. 定义所有组件 ---
+
+        // [组件] CommonStatus.vue
+        const CommonStatus = defineComponent({
+          template: `
+            <div :class="classList" data-v-common-status>
+              <div :class="['summary', { 'has-wrapped-summary': wrapped }]" @click="toggle" data-v-common-status>
+                <div class="summary-main-line" data-v-common-status>
+                  <i v-if="(icon || '').startsWith('fa-') || (icon || '').startsWith('iconfont')" 
+                     :class="['icon-star', icon, { 'is-open': opened }]" data-v-common-status>
+                  </i>
+                  <span v-else :class="['icon-star', { 'is-open': opened }]" data-v-common-status>
+                    {{ locked ? '🔒' : (icon || '✦') }}
+                  </span>
+                  <span class="summary-title" data-v-common-status>
+                    <slot name="title">{{ title }}</slot>
+                  </span>
+                  <span v-if="summaryDetails && !wrapped" class="summary-details" data-v-common-status>
+                    {{ summaryDetails }}
+                  </span>
+                  <span :class="['arrow-toggle', { rotated: opened }]" data-v-common-status>▼</span>
+                </div>
+                <div v-if="summaryDetails && wrapped" class="summary-wrapped-details" data-v-common-status>
+                  {{ summaryDetails }}
+                </div>
+              </div>
+              <Transition name="collapse"
+                @enter="onEnter"
+                @after-enter="afterEnter"
+                @leave="onLeave"
+                @after-leave="afterLeave">
+                <div class="details-content" v-show="opened" data-v-common-status>
+                  <div class="details-content-inner" data-v-common-status>
+                    <slot></slot>
+                  </div>
+                </div>
+              </Transition>
+            </div>
+          `,
+          props: {
+            title: String,
+            summaryDetails: { type: String, default: '' },
+            defaultOpen: { type: Boolean, default: false },
+            locked: { type: Boolean, default: false },
+            variant: { type: String, default: 'section' },
+            icon: { type: String, default: '' },
+            customClass: { type: String, default: '' }
+          },
+          setup(props) {
+            const opened = ref(props.defaultOpen);
+            const innerWidth = ref(window.innerWidth);
+            const onResize = () => { innerWidth.value = window.innerWidth; };
+            onMounted(() => window.addEventListener('resize', onResize));
+            onUnmounted(() => window.removeEventListener('resize', onResize));
+            const wrapped = computed(() => {
+              if (!props.summaryDetails) return false;
+              const len = props.summaryDetails.length;
+              return innerWidth.value <= 600 ? len > 10 : innerWidth.value <= 1000 ? len > 30 : len > 50;
+            });
+            const classList = computed(() => {
+              const arr = ['details-status', `details-${props.variant}`];
+              if (props.locked) arr.push('locked');
+              if (opened.value) arr.push('is-open');
+              if (props.customClass) arr.push(props.customClass);
+              return arr.join(' ');
+            });
+            const toggle = () => { if (!props.locked) opened.value = !opened.value; };
+            const onEnter = el => { el.style.height = '0'; el.style.overflow = 'hidden'; void el.offsetHeight; el.style.height = `${el.scrollHeight}px`; };
+            const afterEnter = el => { el.style.height = ''; el.style.overflow = ''; };
+            const onLeave = el => { el.style.height = `${el.scrollHeight}px`; el.style.overflow = 'hidden'; void el.offsetHeight; el.style.height = '0'; };
+            const afterLeave = el => { el.style.height = ''; el.style.overflow = ''; };
+            return { opened, wrapped, classList, toggle, onEnter, afterEnter, onLeave, afterLeave };
+          }
+        });
+
+        // [组件] WsHeader.vue
+        const WsHeader = defineComponent({
+          template: `
+            <div class="scroll-header" data-v-header>
+              <div class="master-ui-title" data-v-header>
+                <h1 data-v-header>无双志</h1>
+              </div>
+              <div class="scroll-poem-container" data-v-header>
+                <h1 data-v-header>宿命诗</h1>
+                <div class="poem-grid" data-v-header>
+                  <template v-if="lines.length === 0">
+                    <p data-v-header>（暂无）</p>
+                  </template>
+                  <template v-else v-for="(line, index) in lines" :key="index">
+                     <p v-if="index % 2 === 0" data-v-header>{{ lines[index] || '...' }}</p>
+                     <p v-if="index % 2 === 0" data-v-header>{{ lines[index + 1] || '...' }}</p>
+                  </template>
+                </div>
+              </div>
+            </div>
+          `,
+          setup() {
+            const { r } = useStatDataStore();
+            const lines = computed(() => {
+              const arr = r('天下闻.咏叹', ['（暂无诗篇）']);
+              const first = String(arr[0] || '（暂无诗篇）').replace(/\\\\n/g,'\n').replace(/\\n/g,'\n');
+              return first.split('\n').filter(line => line.trim() !== '');
+            });
+            return { lines };
+          }
+        });
+
+        // [组件] WsWorld.vue
+        const WsWorld = defineComponent({
+          template: `
+            <div class="world-status" data-v-world>
+              <p class="world-info" data-v-world>
+                <i class="iconfont icon-rili info-icon" data-v-world></i>
+                <span class="info-label" data-v-world>时间:</span>
+                <span class="value-main" data-v-world>{{ time }}</span>
+              </p>
+              <p class="world-info" data-v-world>
+                <i class="iconfont icon-dizhiguanli info-icon" data-v-world></i>
+                <span class="info-label" data-v-world>地点:</span>
+                <span class="value-main" data-v-world>{{ place }}</span>
+              </p>
+            </div>
+          `,
+          setup() {
+            const { r } = useStatDataStore();
+            const time = computed(() => r('世界.时间', ['未知时间'])[0]);
+            const place = computed(() => r('世界.地点', ['未知地点'])[0]);
+            return { time, place };
+          }
+        });
+
+        // [组件] WsProtagonist.vue
+        const WsProtagonist = defineComponent({
+          components: { CommonStatus },
+          template: `
+            <CommonStatus title="主角" icon="iconfont icon-wode" :defaultOpen="true" data-v-char>
+              <div class="ws-section-content" data-v-char>
+                <div class="char-property-grid" data-v-char>
+                  <template v-for="p in propsList" :key="p.k">
+                    <i :class="[p.i, 'char-icon']" data-v-char></i>
+                    <span class="char-prop-name" data-v-char>{{ p.k }}</span>
+                    <span class="char-prop-value" data-v-char>{{ p.v }}</span>
+                  </template>
+                </div>
+                <hr data-v-char />
+                <h4 data-v-char>仙术/技能</h4>
+                <template v-if="skills.length > 0">
+                  <CommonStatus
+                    v-for="([key, skill]) in skills"
+                    :key="key"
+                    :title="r(skill, '名称', [key])[0]"
+                    variant="sub-section"
+                    data-v-char
+                  >
+                    <div class="ws-sub-section-content" data-v-char>
+                      {{ r(skill, '描述', ['暂无描述。'])[0] }}
+                    </div>
+                  </CommonStatus>
+                </template>
+                <p v-else class="empty-state-text">(空)</p>
+              </div>
+            </CommonStatus>
+          `,
+          setup() {
+            const { r, c } = useStatDataStore();
+            const protagonist = computed(() => r('主角', {}));
+            const propsList = computed(() => [
+              { k: '声望', i: 'iconfont icon-shengwang', v: r(protagonist.value, '声望', ['--'])[0] },
+              { k: '官职', i: 'iconfont icon-guanmao', v: r(protagonist.value, '官职', ['--'])[0] },
+              { k: '血脉', i: 'iconfont icon-xiemai', v: r(protagonist.value, '血脉', ['--'])[0] },
+              { k: '武力', i: 'iconfont icon-gufengwujianzhongguofenggudaibingqijiangujian_huaban_huaban', v: r(protagonist.value, '武力', [0])[0] },
+              { k: '谋略', i: 'iconfont icon-a-fenzu5', v: r(protagonist.value, '谋略', [0])[0] },
+              { k: '魅力', i: 'iconfont icon-meilizhi-copy', v: r(protagonist.value, '魅力', [0])[0] },
+            ]);
+            const skills = computed(() => Object.entries(c(r(protagonist.value, '仙术[0]', {}))));
+            return { protagonist, propsList, skills, r }; 
+          }
+        });
+        
+        // [组件] WsHangnang.vue
+        const WsHangnang = defineComponent({
+          components: { CommonStatus },
+          template: `
+            <CommonStatus title="行囊" icon="iconfont icon-xingnang01" data-v-char>
+              <div class="ws-section-content no-padding" data-v-char>
+                <CommonStatus title="装备" variant="sub-section" :defaultOpen="true" data-v-char>
+                  <div class="ws-sub-section-content" data-v-char>
+                    <div class="char-property-grid" data-v-char>
+                      <template v-for="o in equipList" :key="o.k">
+                        <i :class="[o.i, 'char-icon']" data-v-char></i>
+                        <span class="char-prop-name" data-v-char>{{ o.k }}</span>
+                        <span class="char-prop-value" data-v-char>{{ o.v }}</span>
+                      </template>
+                    </div>
+                  </div>
+                </CommonStatus>
+                <CommonStatus title="背包" variant="sub-section" data-v-char>
+                   <div class="ws-sub-section-content" data-v-char>
+                      <template v-if="bag.length > 0">
+                        <div v-for="([key, item]) in bag" :key="key" class="item-row" data-v-char>
+                          <span class="value-main">{{ r(item, '名称', [key])[0] }}</span>
+                          <span class="property-name">x {{ r(item, '数量', [0])[0] }}</span>
+                        </div>
+                      </template>
+                      <p v-else class="empty-state-text">(空)</p>
+                   </div>
+                </CommonStatus>
+              </div>
+            </CommonStatus>
+          `,
+          setup() {
+            const { r, c } = useStatDataStore();
+            const equip = computed(() => r('行囊.装备', {}));
+            const equipList = computed(() => [
+              // (我们没有为这些内部图标选择 Iconfont, 你可以之后在 Iconfont.cn 添加它们)
+              { k: '武器', i: 'iconfont icon-gufengwujianzhongguofenggudaibingqijiangujian_huaban_huaban', v: r(equip.value, '武器', ['--'])[0] },
+              { k:a: '防具', i: 'iconfont icon-yifu', v: r(equip.value, '防具', ['--'])[0] },
+              { k: '饰品', i: 'iconfont icon-da-peishishipin', v: r(equip.value, '饰品', ['--'])[0] },
+            ]);
+            const bag = computed(() => Object.entries(c(r('行囊.背包[0]', {}))));
+            return { equipList, bag, r }; 
+          }
+        });
+
+        // [组件] WsFates.vue
+        const WsFates = defineComponent({
+          components: { CommonStatus },
+          template: `
+            <CommonStatus title="结缘录" icon="iconfont icon-yuanfen" data-v-char>
+              <div class="ws-section-content no-padding" data-v-char>
+                <template v-if="list.length > 0">
+                  <CommonStatus
+                    v-for="([key, person]) in list"
+                    :key="key"
+                    :title="r(person, '姓名', [key])[0]"
+                    variant="sub-section"
+                    :summaryDetails="'好感: ' + r(person, '好感度', [0])[0]"
+                    data-v-char
+                  >
+                    <div class="ws-sub-section-content" data-v-char>
+                      ... (内容待实现) ...
+                    </div>
+                  </CommonStatus>
+                </template>
+                <p v-else class="empty-state-text">(空)</p>
+              </div>
+            </CommonStatus>
+          `,
+          setup() {
+            const { r, c } = useStatDataStore();
+            const list = computed(() => Object.entries(c(r('结缘录[0]', {}))));
+            return { list, r }; 
+          }
+        });
+
+        // [组件] WsNews.vue
+        const WsNews = defineComponent({
+          components: { CommonStatus },
+          template: `
+            <CommonStatus title="天下闻" icon="iconfont icon-juanzhou--copy" data-v-char>
+              <div class="ws-section-content no-padding" data-v-char>
+                <CommonStatus title="奇闻" variant="sub-section" :defaultOpen="true" data-v-char>
+                  <div class="ws-sub-section-content" data-v-news-content v-html="qiwens"></div>
+                </CommonStatus>
+                <CommonStatus title="当前剧情" variant="sub-section" :defaultOpen="true" data-v-char>
+                   <div class="ws-sub-section-content" data-v-news-content>
+                      {{ plot }}
+                   </div>
+                </CommonStatus>
+              </div>
+            </CommonStatus>
+          `,
+          setup() {
+            const { r } = useStatDataStore();
+            const qiwens = computed(() => String(r('天下闻.奇闻', ['（暂无奇闻）'])[0]).replace(/\\n/g, '<br>'));
+            const plot = computed(() => String(r('天下闻.当前剧情', ['（暂无剧情）'])[0]));
+            return { qiwens, plot };
+          }
+        });
+
+        // --- 4. 根组件 App ---
+        const App = defineComponent({
+          components: { WsHeader, WsWorld, WsProtagonist, WsHangnang, WsFates, WsNews },
+          template: `
+            <div class="layout" data-v-app>
+              <WsHeader />
+              <WsWorld />
+              <WsProtagonist />
+              <WsHangnang />
+              <WsFates />
+              <WsNews />
+            </div>
+          `,
+          setup() {
+            const statDataStore = useStatDataStore();
+            onMounted(() => {
+              statDataStore.loadData();
+            });
+          }
+        });
+
+        // --- 5. 启动 App (由 bootloader 调用) ---
+        try {
+          const app = createApp(App);
+          app.use(createPinia());
+          app.mount('#app');
+          console.log('--- [无双志 传统版] 已启动 ---');
+        } catch (err) {
+          console.error('启动失败:', err);
+          var appDiv = document.getElementById('app');
+          if (appDiv) {
+            appDiv.innerHTML = '<h3 style=\"color: red; font-family: sans-serif;\">启动失败: ' + err.message + '</h3>';
+          }
+        }
+      } // mountVueApp() 结束
+      
+      // --- 6. 启动 Bootloader ---
+      // (这个会一直等到 Vue, Pinia, Lodash 加载完毕)
+      checkLibsAndBoot();
+
+    })();
+  </script>
+</body>
+</html>
