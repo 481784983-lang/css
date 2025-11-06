@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>无双志 - 独立版</title>
+
+  <!-- Vue (global build) -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+  <!-- Pinia (ESM) -->
+  <script type="module">
+    import { createPinia, defineStore } from 'https://testingcf.jsdelivr.net/npm/pinia/+esm'
+    // expose to window so bundled code can access if it expects createPinia globally
+    window.Pinia = { createPinia, defineStore }
+  </script>
+
+  <!-- Lodash (global _) -->
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+  <!-- Optional local stylesheet (if you have one, put it next to this HTML) -->
+  <link rel="stylesheet" href="./style.css" />
+  <style>
+    /* Minimal fallback so page isn't completely blank while scripts load */
+    html,body,#app{height:100%;margin:0}
+    #app{display:flex;align-items:flex-start;justify-content:center;padding:12px;background:#0f1723;color:#e6eef8;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
+  </style>
+</head>
+<body>
+  <div id="app">正在加载“无双志”UI……</div>
+
+  <script type="module">
+    // Provide safe fallbacks so the imported bundle doesn't immediately throw if SillyTavern environment is absent.
+    window.getVariables = window.getVariables || function(){ return {}; };
+    window.getCurrentMessageId = window.getCurrentMessageId || function(){ return 0; };
+    window._ = window._ || window.lodash || (window._ = { get: (o,k,d)=>{ try{const parts = k.split('.'); let cur=o; for(const p of parts){ if(cur==null) return d; cur = cur[p]; } return cur===undefined?d:cur }catch(e){return d} } });
+
+    // Import the provided bundled JS (must be in same folder as this HTML)
+    import('./index-CGDMVdvE.js')
+      .then(mod=>{
+        // If the bundle exports an init function, call it.
+        if(mod && typeof mod.init === 'function'){
+          try{ mod.init(); }
+          catch(e){ console.warn('调用 bundle.init() 出错：', e); }
+        }
+        // If Vue app didn't mount itself, try to mount a minimal placeholder app to avoid blank screen.
+        setTimeout(()=>{
+          const appRoot = document.getElementById('app');
+          if(appRoot && appRoot.innerHTML.trim()==='正在加载“无双志”UI……'){
+            // Try to mount a tiny Vue app so user sees a UI (non-destructive)
+            const { createApp } = window.Vue || {};
+            if(createApp){
+              const App = {
+                template: '<div style="max-width:980px;margin:12px auto;"><h3>无双志 - 已加载（占位）</h3><p>如果主界面未显示，请打开浏览器控制台查看错误，然后把报错发给我。</p></div>'
+              };
+              try{ createApp(App).mount('#app'); }
+              catch(e){ console.warn('mount placeholder failed', e); }
+            }
+          }
+        }, 800);
+      })
+      .catch(err=>{
+        console.error('加载 index-CGDMVdvE.js 失败：', err);
+        const a = document.getElementById('app');
+        if(a) a.innerText = '加载失败，请在控制台查看错误信息。';
+      });
+  </script>
+</body>
+</html>
