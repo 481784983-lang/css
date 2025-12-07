@@ -1,774 +1,882 @@
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>无双志 — Vue UI</title>
-
-  </head>
-
-<body>
-
-  <div id="app">
-    <h3 style="color: #8c3333; font-family: sans-serif; padding: 20px;">
-      正在加载 无双志 UI...
-    </h3>
-  </div>
-
-  <link rel="stylesheet" href="https://at.alicdn.com/t/c/font_5058414_apch79jw7rj.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Merriweather:ital,wght@0,400;1,400&family=Noto+Sans+SC:wght@400;500;700&family=Almendra+SC&family=Cinzel+Decorative:wght@700&family=EB+Garamond&family=Josefin+Sans&family=Playfair+Display&family=Roboto+Slab&family=Spectral&display=swap">
-
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js" async></script>
-  <script src="https://cdn.jsdelivr.net/npm/pinia@2/dist/pinia.iife.prod.js" async></script>
-  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js" async></script>
-
-  <style>
-    /* --- 1. 全局 CSS (来自 main.css) --- */
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>皇家典籍 (V15 魔導書・聖戦版)</title>
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css)">
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[[https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&family=Inter:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&family=Almendra+SC&family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;700&family=Merriweather:ital,wght@0,400;1,400&family=Josefin+Sans&family=Playfair+Display&family=Roboto+Slab&family=Spectral&display=swap](https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&family=Inter:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&family=Almendra+SC&family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;700&family=Merriweather:ital,wght@0,400;1,400&family=Josefin+Sans&family=Playfair+Display&family=Roboto+Slab&family=Spectral&display=swap)" rel="stylesheet">
+<style>
+    /* --- [ 1. 皇家典籍 日常 UI CSS (V14) ] --- */
+    /* (此方: Master，这部分日常UI是精致的羊皮纸风格，我就先不动啦！) */
     :root {
-      /* “水墨暗红”中国风主题 */
-      --theme-background: #fcfaf5;
-      --theme-background-secondary: #f9f5f0;
-      --theme-background-tertiary: #fdfcf9;
-      --theme-main-border: #5a4a42;
-      --theme-border-dark: #dcd5c8;
-      --theme-border-light: #e7e0d7;
-      --theme-text-primary: #3a332d;
-      --theme-text-secondary: #6e5e54;
-      --theme-text-tertiary: #8c3333;
-      --theme-title-bg: #f9f5f0;
-      --theme-title-bg-hover: #f2ece4;
-      --theme-open-bg: #e9e2d9;
-      --theme-open-border-color: #5a4a42;
-      --theme-star-active: #f7d75a;
-      --theme-star-inactive: #a39a90;
-      --theme-disabled-bg: #e8e4e0;
-      --theme-disabled-text: #b5aaa2;
-      --theme-background-tertiary-opacity: 0.9;
+        --parchment-bg: #F5E8C8;
+        --parchment-texture: linear-gradient(rgba(245, 232, 200, 0.9), rgba(222, 184, 135, 0.95));
+        --parchment-darker: #C8B59A;
+        --content-bg: #FFFBF0;
+        --text-color: #6D4C41;
+        --heading-color: #4E342E;
+        --secondary-text: #A1887F;
+        --accent-gold: #C0952A;
+        --accent-gold-light: #E0B85F;
+        --icon-color: #6D4C41;
+        --border-color: rgba(109, 76, 65, 0.3);
+        --shadow-color: rgba(74, 44, 19, 0.4);
+        --stamina-color: #9CCC65;
+        --hp-color: #EF9A9A;
+        --mp-color: #90CAF9;
+        --combat-red: #B71C1C;
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    /* 基础页面背景 (模仿旧版) */
+    
     body {
-      font-family: 'EB Garamond', 'Noto Sans SC', serif;
-      color: #4a3b2a;
-      background: #f7f3ee;
-      padding: 20px;
+        background-color: var(--text-color);
+        background-image: var(--parchment-texture);
+        color: var(--text-color);
+        font-family: 'Inter', 'Noto Sans SC', sans-serif;
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
     }
-    .value-main {
-      font-weight: 500;
-      color: var(--theme-text-primary);
-    }
-    .property-name {
-      font-weight: bold;
-      color: var(--theme-text-tertiary);
-    }
-    .empty-state-text {
-      color: #888;
-      font-style: italic;
-      opacity: 0.8;
-      padding: 15px;
-    }
+    body.status-mode { padding: 15px 10px; }
+    body.combat-mode { padding: 0; }
 
-    /* --- 2. App.vue CSS --- */
-    .layout[data-v-app] {
-      display: flex;
-      flex-direction: column;
-      padding: 15px;
-      background-color: var(--theme-background);
-      opacity: var(--theme-background-opacity, 1);
-      border: var(--theme-main-border-width, 2px) solid var(--theme-main-border);
-      border-radius: 8px;
-      overflow: hidden;
-      max-width: 920px;
-      margin: 0 auto;
-    }
-
-    /* --- 3. CommonStatus.vue CSS --- */
-    .details-status[data-v-common-status] {
-      margin-bottom: 6px;
-      border: 1px solid var(--theme-border-light);
-      border-radius: 4px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,.1);
-      transition: all .3s ease-in-out;
-    }
-    .details-status[data-v-common-status]:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 15px rgba(0,0,0,.25);
-    }
-    .details-status.locked .summary[data-v-common-status] {
-      background-color: var(--theme-disabled-bg);
-      color: var(--theme-disabled-text);
-      cursor: not-allowed;
-    }
-    .details-status.locked .summary .icon-star[data-v-common-status] {
-      color: var(--theme-disabled-text);
-    }
-    .summary[data-v-common-status] {
-      font-family: "Cinzel", serif;
-      font-weight: 700;
-      color: var(--theme-text-tertiary);
-      background-color: var(--theme-title-bg);
-      padding: 4px 15px;
-      cursor: pointer;
-      list-style: none;
-      border-bottom: 1px solid var(--theme-border-dark);
-      text-align: left;
-      transition: background-color .2s ease, color .2s ease;
-    }
-    .summary[data-v-common-status]:hover {
-      background-color: var(--theme-title-bg-hover);
-      color: var(--theme-text-primary);
-    }
-    .is-open .summary[data-v-common-status] {
-      background-color: var(--theme-open-bg);
-      border-bottom-color: var(--theme-open-border-color);
-    }
-    .summary.has-wrapped-summary[data-v-common-status] {
-      padding-bottom: 8px;
-    }
-    .summary-main-line[data-v-common-status] {
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
-    .icon-star[data-v-common-status] {
-      font-size: 1.25em;
-      color: var(--theme-star-inactive);
-      text-shadow: none;
-      margin-right: 12px;
-      flex-shrink: 0;
-      transform-origin: center center;
-      transition: transform .4s cubic-bezier(0.68,-0.55,.27,1.55), color .4s ease, text-shadow .4s ease;
-      display: inline-block;
-      text-align: center;
-      width: 1.2em;
-      vertical-align: -0.15em;
-    }
-    .icon-star.is-open[data-v-common-status] {
-      transform: rotate(360deg);
-      color: var(--theme-star-active);
-      text-shadow: 0 0 3px hsla(0,0%,100%,.8), 0 0 6px var(--theme-star-active), 0 0 10px #e5a50a;
-    }
-    .summary-title[data-v-common-status] {
-      flex: 1;
-    }
-    .summary-details[data-v-common-status] {
-      margin-left: auto;
-      padding-right: 15px;
-      font-family: "Noto Sans SC", "Courier New", monospace;
-      font-weight: 500;
-      font-size: .8em;
-      color: var(--theme-text-secondary);
-      letter-spacing: .5px;
-      text-shadow: 0 0 1px rgba(0,0,0,.05);
-      align-self: center;
-      flex-shrink: 0;
-    }
-    .summary-wrapped-details[data-v-common-status] {
-      margin-top: 6px;
-      padding-left: 22px;
-      padding-right: 10px;
-      font-family: "Noto Sans SC", "Courier New", monospace;
-      font-weight: 500;
-      font-size: .8em;
-      color: var(--theme-text-secondary);
-      letter-spacing: .5px;
-      text-shadow: 0 0 1px rgba(0,0,0,.05);
-      line-height: 1.4;
-      word-break: auto-phrase;
-    }
-    .arrow-toggle[data-v-common-status] {
-      transition: transform .2s ease-in-out;
-      font-size: .8em;
-      padding-left: 5px;
-      margin-left: auto;
-      flex-shrink: 0;
-    }
-    .arrow-toggle.rotated[data-v-common-status] {
-      transform: rotate(90deg);
-    }
-    .details-content[data-v-common-status] {
-      background-color: var(--theme-background-tertiary);
-      opacity: var(--theme-background-tertiary-opacity);
-      overflow: hidden;
-    }
-    .details-content-inner[data-v-common-status] {
-      padding: 15px;
-      text-align: left;
-      font-size: .9em;
-    }
-    .details-sub-section .details-content-inner[data-v-common-status] {
-      padding-top: 5px;
-      padding-bottom: 5px;
-    }
-    .details-entry .summary[data-v-common-status] {
-      padding-top: .8px;
-      padding-bottom: .8px;
-      font-size: .9em;
-    }
-    .details-entry .details-content-inner[data-v-common-status] {
-      padding: 10px 15px;
-    }
-    .collapse-enter-active[data-v-common-status],
-    .collapse-leave-active[data-v-common-status] {
-      transition: height .2s ease-in-out;
-      overflow: hidden;
-    }
-    .collapse-enter-from[data-v-common-status],
-    .collapse-leave-to[data-v-common-status] {
-      height: 0 !important;
-    }
-
-    /* --- 4. WsHeader.vue CSS --- */
-    .scroll-header[data-v-header] {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding-bottom: 15px;
-      border-bottom: 2px solid var(--theme-main-border);
-      margin-bottom: 20px;
-    }
-    .master-ui-title h1[data-v-header] {
-      font-family: 'Cinzel Decorative', serif;
-      font-size: 2.8em;
-      font-weight: 700;
-      margin: 0;
-      color: var(--theme-text-tertiary);
-      text-shadow: none;
-    }
-    .scroll-poem-container h1[data-v-header] {
-      font-family: 'Cinzel Decorative', serif;
-      font-size: 1.8em;
-      color: var(--theme-text-tertiary);
-      text-shadow: none;
-    }
-    .scroll-poem-container[data-v-header] {
-      text-align: right;
-    }
-    .poem-grid[data-v-header] {
-      display: grid;
-      grid-template-columns: auto auto;
-      gap: 5px 20px;
-      padding: 10px 0;
-      font-family: 'Noto Sans SC', serif;
-      font-size: 1.0em;
-      color: var(--theme-text-secondary);
-      text-align: right;
-    }
-    .poem-grid p[data-v-header] {
-      margin: 0;
-    }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); } ::-webkit-scrollbar-thumb { background: var(--accent-gold); border-radius: 3px; border: 1px solid var(--parchment-bg); }
     
-    /* --- 5. WsWorld.vue CSS --- */
-    .world-status[data-v-world] {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      background-color: var(--theme-background-secondary);
-      padding: 10px 15px;
-      margin-bottom: 15px;
-      border: 1px solid var(--theme-border-dark);
-      border-radius: 4px;
-      box-shadow: 0 2px 5px #0000001a;
-      transition: transform .2s ease-in-out,box-shadow .2s ease-in-out
+    #chessboard-container-wrapper {
+        max-width: 900px; margin: 10px auto; 
+        border: 2px solid var(--heading-color); 
+        border-radius: 8px; 
+        background: var(--parchment-bg); 
+        box-shadow: 0 3px 12px var(--shadow-color), inset 0 0 10px rgba(74, 44, 19, 0.25); 
+        padding: 10px; position: relative; z-index: 1;
     }
-    .world-status[data-v-world]:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 10px #0003
-    }
-    .world-info[data-v-world] {
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      line-height: 1.6
-    }
-    .info-icon[data-v-world] {
-      flex-shrink: 0;
-      line-height: 1;
-      font-size: 1.2em;
-      width: 1.2em;
-      text-align: center;
-      vertical-align: -0.15em;
-      color: var(--theme-text-secondary);
-    }
-    .info-label[data-v-world] {
-      font-weight: 500;
-      color: var(--theme-text-primary);
-      flex-shrink: 0;
-      line-height: 1
-    }
-    .value-main[data-v-world] { 
-      font-weight: 500; 
-      color: var(--theme-text-primary); 
-    }
-    
-    
-    /* --- 6. Protagonist, Hangnang, Fates, News (共享的 CSS) --- */
-    .ws-section-content[data-v-char] { 
-      padding: 15px; 
-    }
-    .ws-section-content.no-padding[data-v-char] { 
-      padding: 0; 
-    }
-    .ws-sub-section-content[data-v-char] { 
-      padding: 10px 15px; 
-    }
-    .char-property-grid[data-v-char] {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 8px 15px;
-      align-items: center;
-    }
-    .char-icon[data-v-char] { 
-      opacity: .8; 
-      color: var(--theme-text-secondary);
-      font-size: 1.2em;
-      width: 1.2em;
-      text-align: center;
-      vertical-align: -0.15em;
-    }
-    .char-prop-name[data-v-char] {
-      font-weight: 700;
-      color: var(--theme-text-tertiary);
-    }
-    .char-prop-value[data-v-char] {
-        font-weight: 500; 
-        color: var(--theme-text-primary);
-    }
-    hr[data-v-char] {
-      border: 0;
-      height: 1px;
-      background-image: linear-gradient(to right, transparent, rgba(74,59,42,.2), transparent);
-      margin: 15px 0;
-    }
-    h4[data-v-char] {
-      font-family: 'Cinzel', serif;
-      color: var(--theme-text-tertiary);
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-    .item-row[data-v-char] {
-      display: flex;
-      justify-content: space-between;
-      padding: 5px 0;
-      border-bottom: 1px solid rgba(74,59,42,.1);
-    }
-    .ws-sub-section-content[data-v-news-content] {
-      padding: 10px 15px; 
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-  </style>
+    .hidden { display: none !important; }
+    h2, h3, h4, details > summary { font-family: 'EB Garamond', 'Noto Sans SC', serif; font-weight: 700; color: var(--heading-color); text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.7); margin-top: 0; margin-bottom: 8px; }
+    h2 { font-size: 1.5em; margin-bottom: 15px; text-align: center; } 
+    h3 { font-size: 1.25em; } h4 { font-size: 1.1em; } 
+    h3::before, h4::before { content: '•'; color: var(--accent-gold); margin-right: 6px; font-size: 0.8em; vertical-align: middle; }
+    .empty-state-text { color: var(--secondary-text); text-align: center; padding: 10px; font-style: normal; opacity: 0.8; font-size: 0.9em; }
+    .property-name { color: var(--secondary-text); font-weight: 500; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; }
+    .value-main { color: var(--text-color); font-weight: 600; font-size: 0.95em; }
+    details.section { background: rgba(255, 255, 255, 0.15); border: none; border-radius: 8px; margin-bottom: 10px; overflow: hidden; transition: background-color 0.3s ease; box-shadow: inset 0 0 0 1px rgba(109, 76, 65, 0.1); }
+    details[open].section { background-color: rgba(255, 255, 255, 0.3); } 
+    details > summary { display: flex; justify-content: flex-start; align-items: center; list-style: none; padding: 10px 15px; cursor: pointer; font-size: 1.2em; position: relative; border-bottom: 1px solid transparent; transition: border-color 0.3s ease; } 
+    details.section > summary::before { content: none; } 
+    .summary-icon { color: var(--accent-gold); margin-right: 12px; font-size: 1em; opacity: 0.9; width: 1.2em; text-align: center; } 
+    details > summary::-webkit-details-marker { display: none; } 
+    .arrow-toggle { transition: transform 0.3s ease; margin-left: auto; font-size: 0.8em; color: var(--secondary-text); } 
+    details[open] > summary .arrow-toggle { transform: rotate(90deg); } 
+    details[open] > summary { border-bottom-color: var(--border-color); }
+    .section-content { padding: 15px; background-color: var(--content-bg); border-top: none; position: relative; background-image: linear-gradient(45deg, rgba(109, 76, 65, 0.03) 25%, transparent 25%, transparent 75%, rgba(109, 76, 65, 0.03) 75%, rgba(109, 76, 65, 0.03)), linear-gradient(-45deg, rgba(109, 76, 65, 0.03) 25%, transparent 25%, transparent 75%, rgba(109, 76, 65, 0.03) 75%, rgba(109, 76, 65, 0.03)); background-size: 20px 20px; }
+    .section-content::before { content: ''; position: absolute; top: 0; left: 15px; right: 15px; height: 1px; background-image: linear-gradient(to right, transparent, var(--accent-gold) 30%, var(--accent-gold) 70%, transparent); opacity: 0.5; }
+    details.sub-section { background: rgba(0, 0, 0, 0.03); border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 8px; overflow: hidden; transition: background-color 0.2s ease; } 
+    details.sub-section:hover { background-color: rgba(0, 0, 0, 0.06); } 
+    details[open].sub-section { border-color: var(--accent-gold); } 
+    details.sub-section > summary { font-size: 1em; padding: 8px 12px; position: relative; display: flex; align-items: center; font-family: 'Inter', 'Noto Sans SC', sans-serif; font-weight: 600; } 
+    details.sub-section > summary::before { content: none; } 
+    details.sub-section > summary::after { content: '❈'; color: var(--secondary-text); font-size: 0.7em; opacity: 0.6; margin-left: 8px; order: 1; } 
+    details.sub-section.is-redline > summary { border-left: 3px solid var(--combat-red); padding-left: 9px; } 
+    .sub-section-content { padding: 10px 12px; } 
+    .sub-section-content p { margin: 4px 0; line-height: 1.5; font-size: 0.9em; } 
+    .sub-section-content p b { color: var(--secondary-text); margin-right: 4px; font-weight: 600; }
+    hr { border: none; height: 1px; background-image: linear-gradient(to right, rgba(109, 76, 65, 0.1) 0%, rgba(109, 76, 65, 0.4) 30%, var(--accent-gold) 50%, rgba(109, 76, 65, 0.4) 70%, rgba(109, 76, 65, 0.1) 100%); opacity: 0.8; margin: 12px 0; }
+    .world-info-box { display: grid; grid-template-columns: 1fr; gap: 8px; background-color: rgba(0,0,0,0.05); padding: 10px; border-radius: 6px; margin-bottom: 12px; border: 1px solid var(--border-color); box-shadow: inset 0 0 5px rgba(0,0,0,0.05); } 
+    .world-info-box > div { border-bottom: 1px dotted var(--border-color); padding-bottom: 5px; margin-bottom: 5px; } 
+    .world-info-box > div:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; } 
+    .world-info-box p { margin: 2px 0; } 
+    @media (min-width: 600px) { .world-info-box { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); } .world-info-box > div { border-bottom: none; border-right: 1px dotted var(--border-color); padding-bottom: 0; margin-bottom: 0; padding-right: 10px; margin-right: 10px; } .world-info-box > div:last-child { border-right: none; margin-right: 0; padding-right: 0; } }
+    .progress-bar-container { background-color: rgba(0,0,0,0.1); border-radius: 8px; height: 8px; padding: 1px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.3); overflow: hidden; position: relative; flex-grow: 1; border: 1px solid rgba(0,0,0,0.1); } 
+    .progress-bar-value { height: 100%; border-radius: 6px; transition: width 0.5s ease; background: linear-gradient(to right, var(--accent-gold), var(--accent-gold-light)); box-shadow: inset 0 1px 1px rgba(255,255,255,0.4), inset 0 -1px 1px rgba(0,0,0,0.15); } 
+    #main-hp-bar { background: linear-gradient(to right, var(--hp-color), #F48FB1); } 
+    #main-mp-bar { background: linear-gradient(to right, var(--mp-color), #90CAF9); } 
+    #main-sp-bar { background: linear-gradient(to right, var(--stamina-color), #AED581); }
+    .item-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; padding: 8px 0; border-radius: 0; transition: background-color 0.2s; position: relative; border-bottom: 1px dotted var(--border-color); } 
+    .item-row:last-child { border-bottom: none; } .item-row:hover { background-color: rgba(0, 0, 0, 0.03); } .item-row > div:first-child { padding-left: 0; } .item-row .value-main { text-align: right; font-size: 0.9em; } .item-row small { font-size: 0.85em; opacity: 0.8; color: var(--secondary-text); }
+    .map-location { display: flex; align-items: center; gap: 10px; cursor: default; padding: 8px 5px; border-radius: 4px; transition: background-color 0.2s; position: relative; border-bottom: 1px dotted var(--border-color); } 
+    .map-location:last-child { border-bottom: none; } .map-location:hover { background-color: rgba(0, 0, 0, 0.03); } .map-location::before { content: '📜'; color: var(--accent-gold); opacity: 0.8; margin-right: 5px; font-size: 0.9em; } .location-text { flex-grow: 1; font-size: 0.9em; } .location-text b { font-weight: 600; } .location-text small { font-size: 0.9em; color: var(--secondary-text); }
+    .action-button, .filter-btn { background-color: rgba(255, 255, 255, 0.3); border: 1px solid var(--border-color); color: var(--text-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; font-size: 0.9em; font-family: 'Inter', 'Noto Sans SC', sans-serif; box-shadow: 0 1px 3px rgba(0,0,0,0.15); text-shadow: none; min-width: 70px; text-align: center; line-height: 1.4; } 
+    .action-button i, .filter-btn i { margin-right: 6px; opacity: 0.8; font-size: 0.9em; } 
+    .action-button:hover, .filter-btn:hover { background-color: rgba(255, 255, 255, 0.5); border-color: var(--accent-gold); color: var(--heading-color); box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-weight: 600; transform: translateY(-1px); } 
+    .filter-btn.active { background-color: var(--accent-gold); color: var(--content-bg); border-color: var(--accent-gold); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.2); transform: none; }
+    .detail-grid { display: grid; grid-template-columns: 1fr; gap: 8px; } 
+    @media (min-width: 480px) { .attributes-grid { grid-template-columns: 1fr 1fr; } } .detail-grid-item { display: grid; grid-template-columns: 20px auto 1fr; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 1px dotted rgba(109, 76, 65, 0.3); } 
+    .detail-grid-item:last-child { border-bottom: none; } .detail-grid-item .icon { color: var(--icon-color); text-shadow: none; text-align: center; font-size: 1em; width: 20px; flex-shrink: 0; opacity: 0.8; } .detail-grid-item .value-main { text-align: right; font-size: 0.95em; } .resource-row .icon { text-shadow: 0 0 6px rgba(255, 255, 255, 0.7); opacity: 1; } .resource-grid-item { display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 1px dotted rgba(109, 76, 65, 0.3); } .resource-row { display: flex; align-items: center; gap: 8px; flex-grow: 1; } .resource-row .value-main { font-size: 0.9em; white-space: nowrap; }
+    .currency-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; } 
+    .currency-item { display: flex; align-items: center; background-color: rgba(0,0,0,0.05); padding: 5px 8px; border-radius: 6px; border: 1px solid var(--border-color); } 
+    .currency-icon { font-size: 1.1em; margin-right: 6px; width: 18px; text-align: center; } .currency-info .property-name { font-size: 0.7em; } .currency-info .value-main { font-size: 0.95em; } 
+    .icon-gold, .icon-platinum, .icon-crystal { color: var(--accent-gold); } .icon-silver { color: #A0A0A0; } .icon-copper { color: #A05A2C; } .icon-bone { color: #CEC8B7; } .tag { background-color: var(--secondary-text); color: var(--content-bg); padding: 1px 5px; border-radius: 4px; font-size: 0.7em; font-weight: normal; margin-left: 4px; display: inline-block; white-space: nowrap; }
+    .char-favor-bar-container { background-color: rgba(0,0,0,0.1); border-radius: 5px; height: 6px; overflow:hidden; border: 1px solid var(--border-color); padding: 1px; } 
+    .char-favor-bar { background: var(--accent-gold); height: 100%; border-radius: 3px; transition: width 0.5s ease; box-shadow: none; }
+    .memory-entry { background: rgba(0,0,0,0.03); border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 6px; } 
+    .memory-entry[open] { box-shadow: none; border-color: var(--accent-gold); } .memory-entry > summary { font-size: 0.9em; padding: 6px 10px; font-family: 'Inter', 'Noto Sans SC', sans-serif; font-weight: 500; } 
+    .memory-content { padding: 0 10px 10px 10px; line-height: 1.5; color: var(--text-color); font-size: 0.85em; opacity: 0.9; } .memory-content p { margin-top: 5px; }
+    .protagonist-tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 10px; } 
+    .protagonist-tab { padding: 8px 15px; cursor: pointer; background-color: transparent; border: 1px solid transparent; border-bottom: none; border-radius: 6px 6px 0 0; margin-right: 5px; color: var(--secondary-text); font-family: 'EB Garamond', serif; font-weight: 700; font-size: 1.1em; transition: all 0.2s ease; text-shadow: none; position: relative; } 
+    .protagonist-tab:hover { color: var(--accent-gold); } 
+    .protagonist-tab.active { color: var(--accent-gold); background-color: var(--content-bg); border-color: var(--border-color); border-bottom-color: var(--content-bg); margin-bottom: -1px; } 
+    .protagonist-tab.active::after { content: ''; position: absolute; bottom: 0px; left: 15%; width: 70%; height: 2px; background-color: var(--accent-gold); border-radius: 1px; } 
+    .protagonist-tab-content { padding: 15px; background-image: linear-gradient(45deg, rgba(109, 76, 65, 0.03) 25%, transparent 25%, transparent 75%, rgba(109, 76, 65, 0.03) 75%, rgba(109, 76, 65, 0.03)), linear-gradient(-45deg, rgba(109, 76, 65, 0.03) 25%, transparent 25%, transparent 75%, rgba(109, 76, 65, 0.03) 75%, rgba(109, 76, 65, 0.03)); background-size: 20px 20px; }
+    .fp-value { font-weight: 700; color: var(--accent-gold-light); text-shadow: 0 0 5px rgba(224, 184, 95, 0.6); font-size: 1.1em; }
+    /* --- [ End of Daily UI CSS ] --- */
 
-  <script>
-    // 立即执行函数 (IIFE), 避免污染全局
-    (function () {
-      
-      // [!!] 关键: 启动器 (Bootloader) [!!]
-      // 我们必须等待 Vue, Pinia, 和 Lodash 全部加载完毕
-      
-      let bootAttempts = 0;
-      const maxBootAttempts = 200; // 等待 2 秒钟 (200 * 10ms)
 
-      function checkLibsAndBoot() {
-        bootAttempts++;
+    /* --- [ 2. 战斗 UI v15 (魔導書・聖戦版 by Konata) ] --- */
+    :root { 
+        /* (此方: 核心配色大修！) */
+        --arcane-bg: #1a1f2e; /* 深邃魔力蓝 (替换 #1a1a1a) */
+        --arcane-panel-bg: rgba(10, 15, 25, 0.6); /* 面板背景 (替换 #2b2b2b) */
+        --arcane-border: #3a4a6b; /* 魔导石边框 (替换 #4a4a4a) */
+        --arcane-glow: #76DDFB; /* 魔力辉光 (替换 #c0392b / #fff) */
+        --arcane-glow-shadow: rgba(118, 221, 251, 0.5);
+
+        --accent-gold-battle: var(--accent-gold); /* #C0952A 统一使用日常UI的金色 */
+        --accent-gold-light-battle: var(--accent-gold-light); /* #E0B85F */
+
+        --battle-font-primary: 'Noto Sans SC', sans-serif;
+        --battle-font-secondary: 'Cinzel', 'EB Garamond', 'Noto Serif SC', serif; 
         
-        // 检查所有库是否都已在 window 上定义
-        if (window.Vue && window.Pinia && window._) {
-          // 成功! 库都已加载，启动 App
-          console.log('--- [无双志 传统版] 依赖库加载成功 ---');
-          mountVueApp();
-        } else if (bootAttempts > maxBootAttempts) {
-          // 超时
-          console.error('--- [无双志 传统版] 依赖库加载超时 ---');
-          var errorMsg = '错误: 依赖库加载超时。';
-          if (!window.Vue) errorMsg = '错误: Vue.js 未能加载。';
-          else if (!window.Pinia) errorMsg = '错误: Pinia.js 未能加载。';
-          else if (!window._) errorMsg = '错误: Lodash.js 未能加载。';
-          
-          var appDiv = document.getElementById('app');
-          if (appDiv) {
-            appDiv.innerHTML = '<h3 style=\"color: red; font-family: sans-serif;\">' + errorMsg + '</h3>';
-          }
-        } else {
-          // 库尚未加载，10 毫秒后重试
-          setTimeout(checkLibsAndBoot, 10);
-        }
-      }
-      
-      // [!!] 启动函数 [!!]
-      // 只有在 checkLibsAndBoot() 确认所有库都OK后，才会调用此函数
-      function mountVueApp() {
-        
-        // --- 1. 定义别名 ---
-        const { createApp, ref, computed, defineComponent, onMounted, onUnmounted, Transition } = window.Vue;
-        const { createPinia, defineStore } = window.Pinia;
-        const _ = window._;
+        --text-light: #E0E8F5; /* 圣洁白 (替换 #f0f0f0) */
+        --text-dark: #1a1a1a;
+        --text-secondary-battle: #8b9bb3; /* 符文灰 (替换 #999) */
 
-        // --- 2. Pinia Store (数据仓库) ---
-        const useStatDataStore = defineStore("statData", () => {
-          const statData = ref({});
-          const loading = ref(true);
-          const error = ref(null);
+        --hp-color: #c0392b; /* (此方: HP还是用红色吧，比较直观！) */
+        --hp-color-light: #e74c3c;
+        --mp-color: #2980b9;
+        --mp-color-light: #3498db;
+        --bar-bg: #2b344b; /* 状态栏底色 (替换 #333) */
+        --overlay-bg: rgba(26, 31, 46, 0.9); /* 遮罩层 (替换 0,0,0,0.85) */
+        --log-bg: rgba(0, 0, 0, 0.3); /* 日志背景 (替换 #2a2a2a) */
+    }
 
-          function loadData() {
-            try {
-              if (typeof getVariables === "function" && typeof getCurrentMessageId === "function") {
-                const vars = getVariables({ type: "message", message_id: getCurrentMessageId() }) || {};
-                const n = _.get(vars, "stat_data", {});
+    /* (此方: 辉光动画替换！红色 -> 魔力蓝+金色) */
+    @keyframes pulse-glow-battle {
+        0%, 100% { box-shadow: 0 0 20px rgba(192, 149, 42, 0.6), inset 0 0 10px rgba(0, 0, 0, 0.5), 0 0 10px var(--arcane-glow-shadow); }
+        50% { box-shadow: 0 0 30px rgba(224, 184, 95, 0.8), inset 0 0 10px rgba(0, 0, 0, 0.5), 0 0 20px var(--arcane-glow-shadow); }
+    }
+    /* (此方: 锁定动画替换！红色 -> 魔力青色) */
+    @keyframes target-lock-pulse {
+        0%, 100% { background: rgba(118, 221, 251, 0.1); border-color: var(--arcane-glow); box-shadow: 0 0 10px var(--arcane-glow-shadow); }
+        50% { background: rgba(118, 221, 251, 0.2); border-color: #fff; box-shadow: 0 0 20px #fff, 0 0 10px var(--arcane-glow-shadow); }
+    }
+    @keyframes bar-flow {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(200%); }
+    }
+
+    /* (此方: 战斗主容器重构) */
+    #battle-ui-wrapper {
+        max-width: 900px; margin: 10px auto; padding: 12px;
+        background-color: var(--arcane-bg);
+        background-image: linear-gradient(135deg, rgba(58, 74, 107, 0.3) 0%, rgba(0,0,0,0) 60%),
+                          radial-gradient(ellipse at bottom, rgba(192, 149, 42, 0.1) 0%, rgba(0,0,0,0) 70%),
+                          linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
+                          url('[https://www.transparenttextures.com/patterns/dark-matter.png](https://www.transparenttextures.com/patterns/dark-matter.png)');
+        border: 2px solid var(--accent-gold-battle); border-radius: 8px;
+        font-family: var(--battle-font-primary); color: var(--text-light);
+        font-size: 14px; line-height: 1.6; display: flex; flex-direction: column;
+        gap: 12px; 
+        animation: pulse-glow-battle 5s infinite ease-in-out;
+        box-shadow: 0 0 20px rgba(192, 149, 42, 0.6), inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    #battle-ui-wrapper .combatant-area { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    #battle-ui-wrapper .team {
+        display: flex; flex-direction: column; gap: 8px; padding: 10px;
+        background: rgba(10,10,15,0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px;
+    }
+    #battle-ui-wrapper .team-title {
+        font-family: var(--battle-font-secondary);
+        font-weight: 700; font-size: 1.6em; /* (此方: 字体加大！) */ 
+        color: var(--accent-gold-light-battle);
+        text-align: center; border-bottom: 1px solid var(--accent-gold-battle); /* (此方: 红色 -> 金色) */
+        padding-bottom: 5px; margin-bottom: 5px; text-shadow: 0 0 8px var(--accent-gold-battle);
+    }
+    /* (此方: 战斗者血条重构) */
+    #battle-ui-wrapper .combatant-bar {
+        padding: 8px 12px; 
+        background: var(--arcane-panel-bg); /* (此方: 替换 #2b2b2b) */
+        border: 1px solid var(--arcane-border); /* (此方: 替换 #4a4a4a) */
+        border-radius: 4px; cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    #battle-ui-wrapper .combatant-bar:hover { 
+        background: rgba(118, 221, 251, 0.1); 
+        border-color: var(--arcane-glow); /* (此方: 替换金色) */ 
+    }
+    #battle-ui-wrapper .combatant-bar.selected { 
+        animation: target-lock-pulse 2s infinite ease-in-out; /* (此方: 动画已在keyframes修改) */ 
+    }
+    #battle-ui-wrapper .combatant-header { display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 1.1em; margin-bottom: 6px; }
+    #battle-ui-wrapper .combatant-name { font-family: var(--battle-font-secondary); color: var(--text-light); text-shadow: 1px 1px 2px #000; }
+    #battle-ui-wrapper .combatant-type { font-size: 0.8em; color: var(--text-secondary-battle); }
+    #battle-ui-wrapper .stat-bars { display: flex; flex-direction: column; gap: 4px; }
+    #battle-ui-wrapper .stat-bar { width: 100%; height: 16px; background-color: var(--bar-bg); border: 1px solid #111; border-radius: 3px; position: relative; overflow: hidden; }
+    #battle-ui-wrapper .stat-bar-value::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 50%; height: 100%;
+        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+        animation: bar-flow 3s infinite linear;
+    }
+    #battle-ui-wrapper .stat-bar-value { height: 100%; transition: width 0.5s ease; position: absolute; top: 0; left: 0; }
+    #battle-ui-wrapper .stat-bar-value.hp { background: linear-gradient(90deg, var(--hp-color) 0%, var(--hp-color-light) 100%); }
+    #battle-ui-wrapper .stat-bar-value.mp { background: linear-gradient(90deg, var(--mp-color) 0%, var(--mp-color-light) 100%); }
+    #battle-ui-wrapper .stat-bar-text { position: absolute; width: 100%; text-align: center; font-size: 11px; font-weight: 700; color: white; text-shadow: 1px 1px 2px #000, 0 0 3px #000; line-height: 14px; }
+    #battle-ui-wrapper .stat-bar-text .label { font-weight: 500; }
+    #battle-ui-wrapper .action-panel { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; min-height: 200px; }
+    #battle-ui-wrapper .tab-panel { display: flex; flex-direction: column; background: rgba(10,10,15,0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden; }
+    #battle-ui-wrapper .tabs { display: flex; background: var(--arcane-panel-bg); } /* (此方: 替换 #2b2b2b) */
+    #battle-ui-wrapper .tab-button {
+        flex: 1; padding: 10px; background: transparent; border: none; border-bottom: 3px solid transparent;
+        color: var(--text-secondary-battle); font-family: var(--battle-font-secondary);
+        font-size: 1.2em; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
+        text-shadow: 1px 1px 2px #000; 
+    }
+    #battle-ui-wrapper .tab-button:hover { 
+        color: var(--text-light); 
+        background: rgba(118, 221, 251, 0.1); /* (此方: 替换 #3a3a3a) */
+    }
+    #battle-ui-wrapper .tab-button.active-tab { 
+        color: var(--accent-gold-light-battle); /* (此方: 替换 金色) */
+        border-bottom-color: var(--accent-gold-battle); /* (此方: 替换 血红色) */
+        background: rgba(0,0,0,0.2); 
+    }
+    #battle-ui-wrapper #tab-content-area { padding: 10px; height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+    #battle-ui-wrapper .action-item-button {
+        display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 8px 12px;
+        background: #2b344b; /* (此方: 替换 #333) */ 
+        border: 1px solid var(--arcane-border); /* (此方: 替换 #4a4a4a) */
+        border-radius: 4px;
+        color: var(--text-light); cursor: pointer; transition: all 0.3s ease; text-align: left;
+    }
+    #battle-ui-wrapper .action-item-button:hover { 
+        background: rgba(118, 221, 251, 0.15); /* (此方: 替换 血红色) */ 
+        border-color: var(--arcane-glow); 
+    }
+    #battle-ui-wrapper .action-item-name { font-weight: 700; font-size: 1.05em; }
+    #battle-ui-wrapper .action-item-cost { font-size: 0.9em; color: var(--mp-color-light); font-weight: 500; }
+    #battle-ui-wrapper .action-item-count { font-size: 0.9em; color: var(--text-secondary-battle); font-weight: 500; }
+    #battle-ui-wrapper .action-item-desc { font-size: 0.85em; color: var(--text-secondary-battle); width: 100%; margin-top: 4px; }
+    #battle-ui-wrapper .core-actions { display: flex; flex-direction: column; gap: 8px; }
+    /* (此方: 核心按钮大修！告别红色方块！) */
+    #battle-ui-wrapper .core-action-button {
+        width: 100%; height: 100%; padding: 15px;
+        font-family: var(--battle-font-secondary); font-size: 1.4em; font-weight: 700;
+        background-image: linear-gradient(rgba(255,255,255,0.05), rgba(0,0,0,0.1));
+        background-color: rgba(10, 15, 25, 0.6);
+        color: var(--text-light);
+        border: 2px solid var(--arcane-border);
+        border-radius: 6px; cursor: pointer; transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        text-shadow: 0 0 5px var(--arcane-glow-shadow); 
+    }
+    #battle-ui-wrapper .core-action-button:hover {
+        background-color: rgba(118, 221, 251, 0.2); 
+        color: white;
+        border-color: var(--arcane-glow);
+        box-shadow: 0 0 10px var(--arcane-glow), 0 0 15px var(--arcane-glow-shadow), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    }
+    #battle-ui-wrapper .pre-input-area { display: flex; flex-direction: column; gap: 8px; }
+    #battle-ui-wrapper #pre-input-bar { 
+        width: 100%; min-height: 60px; 
+        background: var(--log-bg); /* (此方: 替换 #2a2a2a) */
+        border: 1px solid var(--arcane-border); 
+        border-radius: 4px; color: var(--text-light); 
+        font-family: var(--battle-font-primary); font-size: 1em; padding: 8px; resize: vertical; 
+    }
+    #battle-ui-wrapper #start-turn-button {
+        width: 100%; padding: 12px; font-family: var(--battle-font-secondary);
+        font-size: 1.5em; font-weight: 700; 
+        background: var(--accent-gold-battle); 
+        color: var(--text-dark);
+        border: none; border-radius: 6px; cursor: pointer; transition: all 0.3s ease;
+        box-shadow: 0 0 15px var(--accent-gold-battle);
+    }
+    #battle-ui-wrapper #start-turn-button:hover { 
+        background: var(--accent-gold-light-battle); 
+        color: #000; 
+        box-shadow: 0 0 25px var(--accent-gold-light-battle); 
+    }
+    #battle-ui-wrapper .battle-log-area { 
+        height: 150px; 
+        background: var(--log-bg); /* (此方: 替换 #2a2a2a) */
+        border: 1px solid var(--arcane-border); 
+        border-radius: 6px; padding: 12px; overflow-y: auto; 
+        white-space: pre-line; font-size: 0.9em; color: var(--text-light); 
+    }
+    #battle-ui-wrapper #end-battle-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--overlay-bg); display: flex; justify-content: center; align-items: center; z-index: 100; }
+    #battle-ui-wrapper #end-battle-button {
+        padding: 20px 40px; font-family: var(--battle-font-secondary);
+        font-size: 2em; font-weight: 700; 
+        background: var(--accent-gold-battle); 
+        color: var(--text-dark);
+        border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;
+        box-shadow: 0 0 20px var(--accent-gold-battle);
+    }
+    #battle-ui-wrapper #end-battle-button:hover { background: var(--accent-gold-light-battle); color: #000; transform: scale(1.05); }
+    /* --- [ End of Battle UI v15 ] --- */
+</style>
+</head>
+<body class="status-mode">
+    <div id="chessboard-container-wrapper">
+        </div>
+
+    
+    <div id="battle-ui-wrapper" class="hidden">
+        <div class="combatant-area">
+            <div class="team" id="player-combatants-area">
+                <div class="team-title">光の盟友</div>
+                <p id="player-combatants-placeholder" class="empty-state-text">(等待盟友响应召唤...)</p>
+            </div>
+            <div class="team" id="enemy-combatants-area">
+                <div class="team-title">深淵の敵</div>
+                <p id="enemy-combatants-placeholder" class="empty-state-text">(侦测到深渊波动...)</p>
+            </div>
+        </div>
+        <div class="action-panel">
+            <div class="tab-panel">
+                <div class="tabs">
+                    <button id="tab-btn-skills" class="tab-button" onclick="window.battle_ui_events.selectTab('skills')">
+                        <i class="fa-solid fa-magic-wand-sparkles"></i> 奥義
+                    </button>
+                    <button id="tab-btn-bags" class="tab-button" onclick="window.battle_ui_events.selectTab('bags')">
+                        <i class="fa-solid fa-sack"></i> 次元袋
+                    </button>
+                </div>
+                <div id="tab-content-area">
+                    <p class="empty-state-text">(请指定咏唱者...)</p>
+                </div>
+            </div>
+            <div class="core-actions">
                 
-                // 允许空对象 {}
-                if (!n) { 
-                  throw new Error("获取的状态数据无效 (null or undefined)");
-                }
-                statData.value = n;
-                error.value = null;
-              } else {
-                console.warn("未找到宿主 (getVariables) 函数。UI将使用空数据。");
-                statData.value = {}; 
-              }
-            } catch (e) {
-              console.error("加载数据失败:", e);
-              error.value = e instanceof Error ? e.message : String(e);
-              statData.value = {}; 
-            } finally {
-              loading.value = false;
-            }
-          }
-          
-          const r = (path, def) => _.get(statData.value, path, def);
-          const c = (obj) => (obj && typeof obj === "object" ? _.omitBy(obj, (v, k) => k === "$meta" || k === "$__META_EXTENSIBLE__$") : {});
-          const s = (val) => (Array.isArray(val) ? (val.length === 0 || val[0] === "$__META_EXTENSIBLE__$" ? [] : val) : (val || ""));
-
-          return { statData, loading, error, loadData, r, c, s };
-        });
-
-        // --- 3. 定义所有组件 ---
-
-        // [组件] CommonStatus.vue
-        const CommonStatus = defineComponent({
-          template: `
-            <div :class="classList" data-v-common-status>
-              <div :class="['summary', { 'has-wrapped-summary': wrapped }]" @click="toggle" data-v-common-status>
-                <div class="summary-main-line" data-v-common-status>
-                  <i v-if="(icon || '').startsWith('fa-') || (icon || '').startsWith('iconfont')" 
-                     :class="['icon-star', icon, { 'is-open': opened }]" data-v-common-status>
-                  </i>
-                  <span v-else :class="['icon-star', { 'is-open': opened }]" data-v-common-status>
-                    {{ locked ? '🔒' : (icon || '✦') }}
-                  </span>
-                  <span class="summary-title" data-v-common-status>
-                    <slot name="title">{{ title }}</slot>
-                  </span>
-                  <span v-if="summaryDetails && !wrapped" class="summary-details" data-v-common-status>
-                    {{ summaryDetails }}
-                  </span>
-                  <span :class="['arrow-toggle', { rotated: opened }]" data-v-common-status>▼</span>
-                </div>
-                <div v-if="summaryDetails && wrapped" class="summary-wrapped-details" data-v-common-status>
-                  {{ summaryDetails }}
-                </div>
-              </div>
-              <Transition name="collapse"
-                @enter="onEnter"
-                @after-enter="afterEnter"
-                @leave="onLeave"
-                @after-leave="afterLeave">
-                <div class="details-content" v-show="opened" data-v-common-status>
-                  <div class="details-content-inner" data-v-common-status>
-                    <slot></slot>
-                  </div>
-                </div>
-              </Transition>
+                <button class="core-action-button" onclick="window.battle_ui_events.coreAction('攻击')">
+                    <i class="fa-solid fa-khanda"></i> 斬撃
+                </button>
+                <button class="core-action-button" onclick="window.battle_ui_events.coreAction('防御')">
+                    <i class="fa-solid fa-shield-halved"></i> 守護
+                </button>
+                <button class="core-action-button" onclick="window.battle_ui_events.coreAction('逃跑')">
+                    <i class="fa-solid fa-person-running"></i> 転移
+                </button>
             </div>
-          `,
-          props: {
-            title: String,
-            summaryDetails: { type: String, default: '' },
-            defaultOpen: { type: Boolean, default: false },
-            locked: { type: Boolean, default: false },
-            variant: { type: String, default: 'section' },
-            icon: { type: String, default: '' },
-            customClass: { type: String, default: '' }
-          },
-          setup(props) {
-            const opened = ref(props.defaultOpen);
-            const innerWidth = ref(window.innerWidth);
-            const onResize = () => { innerWidth.value = window.innerWidth; };
-            onMounted(() => window.addEventListener('resize', onResize));
-            onUnmounted(() => window.removeEventListener('resize', onResize));
-            const wrapped = computed(() => {
-              if (!props.summaryDetails) return false;
-              const len = props.summaryDetails.length;
-              return innerWidth.value <= 600 ? len > 10 : innerWidth.value <= 1000 ? len > 30 : len > 50;
-            });
-            const classList = computed(() => {
-              const arr = ['details-status', `details-${props.variant}`];
-              if (props.locked) arr.push('locked');
-              if (opened.value) arr.push('is-open');
-              if (props.customClass) arr.push(props.customClass);
-              return arr.join(' ');
-            });
-            const toggle = () => { if (!props.locked) opened.value = !opened.value; };
-            const onEnter = el => { el.style.height = '0'; el.style.overflow = 'hidden'; void el.offsetHeight; el.style.height = `${el.scrollHeight}px`; };
-            const afterEnter = el => { el.style.height = ''; el.style.overflow = ''; };
-            const onLeave = el => { el.style.height = `${el.scrollHeight}px`; el.style.overflow = 'hidden'; void el.offsetHeight; el.style.height = '0'; };
-            const afterLeave = el => { el.style.height = ''; el.style.overflow = ''; };
-            return { opened, wrapped, classList, toggle, onEnter, afterEnter, onLeave, afterLeave };
-          }
-        });
+        </div>
+        <div class="pre-input-area">
+            <textarea id="pre-input-bar" placeholder="魔導書にルーンを刻む..."></textarea>
+            <button id="start-turn-button" onclick="window.battle_ui_events.startTurn()">
+                <i class="fa-solid fa-play"></i> 運命を紡ぐ
+            </button>
+        </div>
+        <div class="battle-log-area" id="battle-log-content">
+            (戦いの叙事詩が記される...)
+        </div>
+        <div id="end-battle-overlay" class="hidden">
+            <button id="end-battle-button" onclick="window.battle_ui_events.endBattle()">
+                <i class="fa-solid fa-flag-checkered"></i> 凱旋
+            </button>
+        </div>
+    </div>
+    
 
-        // [组件] WsHeader.vue
-        const WsHeader = defineComponent({
-          template: `
-            <div class="scroll-header" data-v-header>
-              <div class="master-ui-title" data-v-header>
-                <h1 data-v-header>无双志</h1>
-              </div>
-              <div class="scroll-poem-container" data-v-header>
-                <h1 data-v-header>宿命诗</h1>
-                <div class="poem-grid" data-v-header>
-                  <template v-if="lines.length === 0">
-                    <p data-v-header>（暂无）</p>
-                  </template>
-                  <template v-else v-for="(line, index) in lines" :key="index">
-                     <p v-if="index % 2 === 0" data-v-header>{{ lines[index] || '...' }}</p>
-                     <p v-if="index % 2 === 0" data-v-header>{{ lines[index + 1] || '...' }}</p>
-                  </template>
-                </div>
-              </div>
-            </div>
-          `,
-          setup() {
-            const { r } = useStatDataStore();
-            const lines = computed(() => {
-              const arr = r('天下闻.咏叹', ['（暂无诗篇）']);
-              const first = String(arr[0] || '（暂无诗篇）').replace(/\\\\n/g,'\n').replace(/\\n/g,'\n');
-              return first.split('\n').filter(line => line.trim() !== '');
-            });
-            return { lines };
-          }
-        });
+<script>
+    // [大师重构 V15 by Konata] 
+    // 移植自“三国”UI (c451f4c2) 的核心逻辑
+    // 融合“皇家”UI (e63b8f93) 的日常函数
+    // (此方: 这里的JS函数和逻辑我都没动哦，Master放心！)
+    (function() {
+        if (window.MASTER_UI_INITIALIZED) return;
+        window.MASTER_UI_INITIALIZED = true;
+        console.log("--- [皇家典籍 V15] 脚本初始化 (Sanguo Core + Royal Daily) ---"); 
 
-        // [组件] WsWorld.vue
-        const WsWorld = defineComponent({
-          template: `
-            <div class="world-status" data-v-world>
-              <p class="world-info" data-v-world>
-                <i class="iconfont icon-rili info-icon" data-v-world></i>
-                <span class="info-label" data-v-world>时间:</span>
-                <span class="value-main" data-v-world>{{ time }}</span>
-              </p>
-              <p class="world-info" data-v-world>
-                <i class="iconfont icon-dizhiguanli info-icon" data-v-world></i>
-                <span class="info-label" data-v-world>地点:</span>
-                <span class="value-main" data-v-world>{{ place }}</span>
-              </p>
-            </div>
-          `,
-          setup() {
-            const { r } = useStatDataStore();
-            const time = computed(() => r('世界.时间', ['未知时间'])[0]);
-            const place = computed(() => r('世界.地点', ['未知地点'])[0]);
-            return { time, place };
-          }
-        });
-
-        // [组件] WsProtagonist.vue
-        const WsProtagonist = defineComponent({
-          components: { CommonStatus },
-          template: `
-            <CommonStatus title="主角" icon="iconfont icon-wode" :defaultOpen="true" data-v-char>
-              <div class="ws-section-content" data-v-char>
-                <div class="char-property-grid" data-v-char>
-                  <template v-for="p in propsList" :key="p.k">
-                    <i :class="[p.i, 'char-icon']" data-v-char></i>
-                    <span class="char-prop-name" data-v-char>{{ p.k }}</span>
-                    <span class="char-prop-value" data-v-char>{{ p.v }}</span>
-                  </template>
-                </div>
-                <hr data-v-char />
-                <h4 data-v-char>仙术/技能</h4>
-                <template v-if="skills.length > 0">
-                  <CommonStatus
-                    v-for="([key, skill]) in skills"
-                    :key="key"
-                    :title="r(skill, '名称', [key])[0]"
-                    variant="sub-section"
-                    data-v-char
-                  >
-                    <div class="ws-sub-section-content" data-v-char>
-                      {{ r(skill, '描述', ['暂无描述。'])[0] }}
-                    </div>
-                  </CommonStatus>
-                </template>
-                <p v-else class="empty-state-text">(空)</p>
-              </div>
-            </CommonStatus>
-          `,
-          setup() {
-            const { r, c } = useStatDataStore();
-            const protagonist = computed(() => r('主角', {}));
-            const propsList = computed(() => [
-              { k: '声望', i: 'iconfont icon-shengwang', v: r(protagonist.value, '声望', ['--'])[0] },
-              { k: '官职', i: 'iconfont icon-guanmao', v: r(protagonist.value, '官职', ['--'])[0] },
-              { k: '血脉', i: 'iconfont icon-xiemai', v: r(protagonist.value, '血脉', ['--'])[0] },
-              { k: '武力', i: 'iconfont icon-gufengwujianzhongguofenggudaibingqijiangujian_huaban_huaban', v: r(protagonist.value, '武力', [0])[0] },
-              { k: '谋略', i: 'iconfont icon-a-fenzu5', v: r(protagonist.value, '谋略', [0])[0] },
-              { k: '魅力', i: 'iconfont icon-meilizhi-copy', v: r(protagonist.value, '魅力', [0])[0] },
-            ]);
-            const skills = computed(() => Object.entries(c(r(protagonist.value, '仙术[0]', {}))));
-            return { protagonist, propsList, skills, r }; 
-          }
-        });
+        // --- [ 1. GLOBAL HELPERS ] ---
+        window.last_stat_data = {}; 
         
-        // [组件] WsHangnang.vue
-        const WsHangnang = defineComponent({
-          components: { CommonStatus },
-          template: `
-            <CommonStatus title="行囊" icon="iconfont icon-xingnang01" data-v-char>
-              <div class="ws-section-content no-padding" data-v-char>
-                <CommonStatus title="装备" variant="sub-section" :defaultOpen="true" data-v-char>
-                  <div class="ws-sub-section-content" data-v-char>
-                    <div class="char-property-grid" data-v-char>
-                      <template v-for="o in equipList" :key="o.k">
-                        <i :class="[o.i, 'char-icon']" data-v-char></i>
-                        <span class="char-prop-name" data-v-char>{{ o.k }}</span>
-                        <span class="char-prop-value" data-v-char>{{ o.v }}</span>
-                      </template>
-                    </div>
-                  </div>
-                </CommonStatus>
-                <CommonStatus title="背包" variant="sub-section" data-v-char>
-                   <div class="ws-sub-section-content" data-v-char>
-                      <template v-if="bag.length > 0">
-                        <div v-for="([key, item]) in bag" :key="key" class="item-row" data-v-char>
-                          <span class="value-main">{{ r(item, '名称', [key])[0] }}</span>
-                          <span class="property-name">x {{ r(item, '数量', [0])[0] }}</span>
-                        </div>
-                      </template>
-                      <p v-else class="empty-state-text">(空)</p>
-                   </div>
-                </CommonStatus>
-              </div>
-            </CommonStatus>
-          `,
-          setup() {
-            const { r, c } = useStatDataStore();
-            const equip = computed(() => r('行囊.装备', {}));
-            const equipList = computed(() => [
-              // (我们没有为这些内部图标选择 Iconfont, 你可以之后在 Iconfont.cn 添加它们)
-              { k: '武器', i: 'iconfont icon-gufengwujianzhongguofenggudaibingqijiangujian_huaban_huaban', v: r(equip.value, '武器', ['--'])[0] },
-              { k:a: '防具', i: 'iconfont icon-yifu', v: r(equip.value, '防具', ['--'])[0] },
-              { k: '饰品', i: 'iconfont icon-da-peishishipin', v: r(equip.value, '饰品', ['--'])[0] },
-            ]);
-            const bag = computed(() => Object.entries(c(r('行囊.背包[0]', {}))));
-            return { equipList, bag, r }; 
-          }
-        });
+        let selectedParticipantKey = 'player'; 
+        let currentCombatTab = 'skills'; 
 
-        // [组件] WsFates.vue
-        const WsFates = defineComponent({
-          components: { CommonStatus },
-          template: `
-            <CommonStatus title="结缘录" icon="iconfont icon-yuanfen" data-v-char>
-              <div class="ws-section-content no-padding" data-v-char>
-                <template v-if="list.length > 0">
-                  <CommonStatus
-                    v-for="([key, person]) in list"
-                    :key="key"
-                    :title="r(person, '姓名', [key])[0]"
-                    variant="sub-section"
-                    :summaryDetails="'好感: ' + r(person, '好感度', [0])[0]"
-                    data-v-char
-                  >
-                    <div class="ws-sub-section-content" data-v-char>
-                      ... (内容待实现) ...
-                    </div>
-                  </CommonStatus>
-                </template>
-                <p v-else class="empty-state-text">(空)</p>
-              </div>
-            </CommonStatus>
-          `,
-          setup() {
-            const { r, c } = useStatDataStore();
-            const list = computed(() => Object.entries(c(r('结缘录[0]', {}))));
-            return { list, r }; 
-          }
-        });
+        let currentInventoryFilter = '全部';
+        let currentProtagonistTab = 'core'; 
+        
+        const isObject = (item) => (item && typeof item === 'object' && !Array.isArray(item));
+        
+        const setToggle = (id, visible) => {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden', !visible);
+        };
+        
+        const deepMerge = (target, source) => {
+            let output = Object.assign({}, target);
+            if (isObject(target) && isObject(source)) {
+                Object.keys(source).forEach(key => {
+                    if (key === '$meta') return;
+                    if (isObject(source[key])) {
+                        if (!(key in target) || !isObject(target[key])) { Object.assign(output, { [key]: source[key] }); } 
+                        else { output[key] = deepMerge(target[key], source[key]); }
+                    } else { Object.assign(output, { [key]: source[key] }); }
+                });
+            }
+            return output;
+        };
+        
+        const SafeGetValue = (obj, path, defaultValue) => {
+            try {
+                const keys = path.split('.');
+                let current = obj;
+                for (let i = 0; i < keys.length; i++) {
+                    const key = keys[i];
+                    if (current === null || typeof current !== 'object') { return defaultValue; }
+                    const match = key.match(/^(.+?)\[(\d+)\]$/);
+                    if (match) {
+                        const arrayKey = match[1];
+                        const index = parseInt(match[2], 10);
+                        if (current.hasOwnProperty(arrayKey) && Array.isArray(current[arrayKey]) && index >= 0 && index < current[arrayKey].length) {
+                            current = current[arrayKey][index];
+                        } else { return defaultValue; }
+                    } else if (current.hasOwnProperty(key)) {
+                        current = current[key];
+                    } else { return defaultValue; }
+                }
+                return current === undefined ? defaultValue : current;
+            } catch (error) {
+                console.error(`SafeGetValue CRITICAL ERROR for path \"${path}\" in obj:`, obj, 'Error:', error);
+                return defaultValue;
+            }
+        };
 
-        // [组件] WsNews.vue
-        const WsNews = defineComponent({
-          components: { CommonStatus },
-          template: `
-            <CommonStatus title="天下闻" icon="iconfont icon-juanzhou--copy" data-v-char>
-              <div class="ws-section-content no-padding" data-v-char>
-                <CommonStatus title="奇闻" variant="sub-section" :defaultOpen="true" data-v-char>
-                  <div class="ws-sub-section-content" data-v-news-content v-html="qiwens"></div>
-                </CommonStatus>
-                <CommonStatus title="当前剧情" variant="sub-section" :defaultOpen="true" data-v-char>
-                   <div class="ws-sub-section-content" data-v-news-content>
-                      {{ plot }}
-                   </div>
-                </CommonStatus>
-              </div>
-            </CommonStatus>
-          `,
-          setup() {
-            const { r } = useStatDataStore();
-            const qiwens = computed(() => String(r('天下闻.奇闻', ['（暂无奇闻）'])[0]).replace(/\\n/g, '<br>'));
-            const plot = computed(() => String(r('天下闻.当前剧情', ['（暂无剧情）'])[0]));
-            return { qiwens, plot };
-          }
-        });
+        const royal_updateProgressBar = (barId, current, max, color, shadowColor = null) => { 
+            const bar = document.getElementById(barId); 
+            if (bar) { 
+                const percentage = max > 0 ? (current / max) * 100 : 0; 
+                bar.style.width = `${Math.max(0, Math.min(100, percentage))}%`; 
+            } 
+        };
+        
+        const setContent = (id, content) => { const el = document.getElementById(id); if (el) el.innerHTML = content; };
 
-        // --- 4. 根组件 App ---
-        const App = defineComponent({
-          components: { WsHeader, WsWorld, WsProtagonist, WsHangnang, WsFates, WsNews },
-          template: `
-            <div class="layout" data-v-app>
-              <WsHeader />
-              <WsWorld />
-              <WsProtagonist />
-              <WsHangnang />
-              <WsFates />
-              <WsNews />
-            </div>
-          `,
-          setup() {
-            const statDataStore = useStatDataStore();
-            onMounted(() => {
-              statDataStore.loadData();
-            });
-          }
-        });
+        const defaultEmptyState = {
+          "UI状态": { "当前界面": [ "日常", "控制UI显示：'日常' (皇家典籍UI) 或 '战斗' (皇家战斗UI)" ] },
+          "战斗状态": [ { "in_combat": [ false, "是否在战斗中 (true/false)。由AI提示词(Prompt)的'S 状态机'规则控制。" ], "enemies": { "$meta": { "extensible": true } }, "allies": { "$meta": { "extensible": true } }, "combat_log": [ "(战斗日志)", "" ] } ],
+          "主角": { "姓名": [ "<user>", "主角的姓名。" ], "年龄": [ 0, "主角的当前年龄。" ], "身份": [ "(无)", "主角的社会身份或头衔。" ], "力量层次": [ "(未定义)", "描述主角当前的实力，格式为：等级(层级名)。" ], "资源": { "生命值": [ 100, "建议设置合理的初始值" ], "生命值上限": [ 100, "建议设置合理的初始值" ], "法力值": [ 50, "建议设置合理的初始值" ], "法力值上限": [ 50, "建议设置合理的初始值" ], "体力值": [ 100, "体力值" ], "体力值上限": [ 100, "体力值上限" ] }, "装备": [ { "武器": [ "(无)", "" ], "盔甲": [ "(无)", "" ], "饰品": [ "(无)", "" ] } ], "状态效果": [ { "$meta": { "extensible": true } } ], "技能": [ { "$meta": { "extensible": true } } ] },
+          "世界": { "时间": [ "(未设定)", "当前的游戏内时间。" ], "地点": [ "(未知)", "记录<user>当前所在的具体位置。" ], "邻近地点": [ [], "由AI根据当前地点动态生成的、可探索的附近场景。" ], "天气": [ "无", "当前区域的天气状况。" ], "当前声望": [ 0, "影响NPC的基础态度, 范围-100到100。" ] },
+          "人脉关系": [ { "$meta": { "extensible": true } } ],
+          "任务列表": [ { "$meta": { "extensible": true } } ],
+          "财产": { "货币": { "白金币": [ 0, "" ], "星辉结晶": [ 0, "" ], "兽骨币": [ 0, "" ], "金币": [ 0, "" ], "银币": [ 0, "" ], "铜币": [ 0, "" ] }, "背包": [ { "$meta": { "extensible": true } } ] },
+          "命运系统": { "命运点数": [ 0, "FP，驱动【命运红线】系统的核心资源。" ], "红线对象": [ { "$meta": { "extensible": true } } ] },
+          "今日新闻": { "金狮快讯": [ "（暂无最新快讯）", "" ], "酒馆留言板": [ "（留言板上空空如也）", "" ], "世界真奇妙": [ "（暂无奇闻）", "" ], "莉莉丝的午后茶会": [ "（茶会上没什么新八卦）", "" ] },
+          "世界图鉴": [ { "$meta": { "extensible": true } } ]
+        };
 
-        // --- 5. 启动 App (由 bootloader 调用) ---
-        try {
-          const app = createApp(App);
-          app.use(createPinia());
-          app.mount('#app');
-          console.log('--- [无双志 传统版] 已启动 ---');
-        } catch (err) {
-          console.error('启动失败:', err);
-          var appDiv = document.getElementById('app');
-          if (appDiv) {
-            appDiv.innerHTML = '<h3 style=\"color: red; font-family: sans-serif;\">启动失败: ' + err.message + '</h3>';
-          }
+
+        // --- [ 2. MVU 交互助手 (来自 Sanguo) ] ---
+        window.SillyTavern_MVU_Set = (path, old_val, new_val, comment = "UI: Set") => {
+            if (typeof Mvu === 'undefined') return console.error("[MasterUI] Mvu not found!");
+            Mvu.setVariable(path, old_val, new_val, comment);
+        };
+        window.SillyTavern_TriggerSlash = (command) => {
+            if (typeof triggerSlash === 'function') {
+                console.log(`[MasterUI] Triggering Slash: ${command}`);
+                triggerSlash(command);
+            } else {
+                console.error('triggerSlash function not found. Command:', command);
+                alert(`Error: triggerSlash function not found. Cannot send command:\n${command}`);
+            }
+        };
+
+        // --- [ 3. 日常 UI 渲染器 (移植自 Royal V13) ] ---
+        
+        function renderStatusUI(data) { 
+            const container = document.getElementById('chessboard-container-wrapper'); 
+            if (!container) { console.error("[RoyalUI V15] 日常UI Wrapper 'chessboard-container-wrapper' not found!"); return; }
+            
+            container.className = 'status-container'; 
+            
+            const sectionIcons = { '主角': 'fa-book-skull', '探索附近': 'fa-compass', '人脉关系': 'fa-users-viewfinder', '命运系统': 'fa-hands-holding-circle', '当前任务': 'fa-scroll', '财产': 'fa-gem', '今日新闻': 'fa-newspaper', '世界图鉴': 'fa-atlas' }; 
+            const sectionOrder = ['主角', '探索附近', '人脉关系', '命运系统', '当前任务', '财产', '今日新闻', '世界图鉴']; 
+            let sectionsHtml = sectionOrder.map(title => { const iconClass = sectionIcons[title] || 'fa-question-circle'; const sectionId = { '主角': 'protagonist-section', '探索附近': 'map-section', '人脉关系': 'contacts-section', '命运系统': 'destiny-section', '当前任务': 'tasks-section', '财产': 'assets-section', '今日新闻': 'news-section', '世界图鉴': 'codex-section' }[title]; const contentPadding = (title === '主角') ? 'padding: 5px 15px 15px 15px;' : ''; return `<details class="section"> <summary><i class="fa-solid ${iconClass} fa-fw summary-icon"></i>${title}<span class="arrow-toggle">&gt;</span></summary> <div class="section-content" id="${sectionId}" style="${contentPadding}"></div> </details>`; }).join(''); 
+            container.innerHTML = `<div class="world-info-box" id="world-info-box"></div> ${sectionsHtml}`; 
+            
+            const worldData = SafeGetValue(data, '世界', {}); 
+            populateWorldInfo(worldData); 
+            populateProtagonist(SafeGetValue(data, '主角', {})); 
+            populateMap(worldData); 
+            populateDestinyAndContacts(data); 
+            const tasksContainer = SafeGetValue(data, '任务列表', []); 
+            const tasksData = Array.isArray(tasksContainer) && tasksContainer.length > 0 ? tasksContainer[0] : {}; 
+            populateQuests(tasksData); 
+            populateAssets(SafeGetValue(data, '财产', {})); 
+            populateNews(SafeGetValue(data, '今日新闻', {})); 
+            populateCodex(SafeGetValue(data, '世界图鉴', [])); 
         }
-      } // mountVueApp() 结束
-      
-      // --- 6. 启动 Bootloader ---
-      // (这个会一直等到 Vue, Pinia, Lodash 加载完毕)
-      checkLibsAndBoot();
+        function populateWorldInfo(worldData) { setContent('world-info-box', ` <div><p><span class="property-name"><i class="fa-solid fa-clock icon"></i> 时间:</span> <span class="value-main">${SafeGetValue(worldData, '时间[0]', '未知')}</span></p></div> <div><p><span class="property-name"><i class="fa-solid fa-map-location-dot icon"></i> 地点:</span> <span class="value-main">${SafeGetValue(worldData, '地点[0]', '未知')}</span></p></div> <div><p><span class="property-name"><i class="fa-solid fa-cloud-sun icon"></i> 天气:</span> <span class="value-main">${SafeGetValue(worldData, '天气[0]', '未知')}</span></p></div> <div><p><span class="property-name"><i class="fa-solid fa-person-rays icon"></i> 声望:</span> <span class="value-main">${SafeGetValue(worldData, '当前声望[0]', 0)}</span></p></div>`); }
+        function populateProtagonist(data) { const resources = SafeGetValue(data, '资源', {}); const equipmentContainer = SafeGetValue(data, '装备', []); const equipment = Array.isArray(equipmentContainer) && equipmentContainer.length > 0 ? equipmentContainer[0] : {}; const statusEffectsContainer = SafeGetValue(data, '状态效果', []); const statusEffects = Array.isArray(statusEffectsContainer) && statusEffectsContainer.length > 0 ? statusEffectsContainer[0] : {}; const skillsContainer = SafeGetValue(data, '技能', []); const skills = Array.isArray(skillsContainer) && skillsContainer.length > 0 ? skillsContainer[0] : {}; const hp = SafeGetValue(resources, '生命值[0]', 0); const maxHp = SafeGetValue(resources, '生命值上限[0]', 1); const mp = SafeGetValue(resources, '法力值[0]', 0); const maxMp = SafeGetValue(resources, '法力值上限[0]', 1); const sp = SafeGetValue(resources, '体力值[0]', 0); const maxSp = SafeGetValue(resources, '体力值上限[0]', 1); const effectKeys = typeof statusEffects === 'object' && statusEffects !== null ? Object.keys(statusEffects).filter(k => k !== '$meta') : []; const skillKeys = typeof skills === 'object' && skills !== null ? Object.keys(skills).filter(k => k !== '$meta') : []; const emptyIcon = `<i class="fa-solid fa-scroll fa-xs" style="opacity: 0.6; margin-right: 5px;"></i>`; const resourcesHtml = `<div class="detail-grid" style="gap: 6px;"> <div class="resource-grid-item" style="border: none; padding-bottom: 0;"> <div class="resource-row"> <span class="icon" style="color:var(--hp-color);"><i class="fa-solid fa-heart"></i></span> <div class="progress-bar-container"><div id="main-hp-bar" class="progress-bar-value"></div></div> <span class="value-main">${hp} / ${maxHp}</span> </div> </div> <div class="resource-grid-item" style="border: none; padding-bottom: 0;"> <div class="resource-row"> <span class="icon" style="color:var(--mp-color);"><i class="fa-solid fa-wand-sparkles"></i></span> <div class="progress-bar-container"><div id="main-mp-bar" class="progress-bar-value"></div></div> <span class="value-main">${mp} / ${maxMp}</span> </div> </div> <div class="resource-grid-item" style="border: none; padding-bottom: 0;"> <div class="resource-row"> <span class="icon" style="color:var(--stamina-color);"><i class="fa-solid fa-person-running"></i></span> <div class="progress-bar-container"><div id="main-sp-bar" class="progress-bar-value"></div></div> <span class="value-main">${sp} / ${maxSp}</span> </div> </div> </div>`; const staticHtml = `<hr> <div class="detail-grid"> <div class="detail-grid-item"><span class="icon"><i class="fa-solid fa-id-card"></i></span><span class="property-name">姓名</span><span class="value-main">${SafeGetValue(data, '姓名[0]', '未设定')}</span></div> <div class="detail-grid-item"><span class="icon"><i class="fa-solid fa-shield-halved"></i></span><span class="property-name">身份</span><span class="value-main">${SafeGetValue(data, '身份[0]', '无')}</span></div> <div class="detail-grid-item"><span class="icon"><i class="fa-solid fa-khanda"></i></span><span class="property-name">力量层次</span><span class="value-main">${SafeGetValue(data, '力量层次[0]', '凡人')}</span></div> </div>`; const equipmentHtml = `<div class="detail-grid"> <div class="detail-grid-item"><span class="icon"><i class="fa-solid fa-gavel"></i></span><span class="property-name">武器</span><span class="value-main">${SafeGetValue(equipment, '武器[0]', '(无)')}</span></div> <div class="detail-grid-item"><span class="icon"><i class="fa-solid fa-shirt"></i></span><span class="property-name">盔甲</span><span class="value-main">${SafeGetValue(equipment, '盔甲[0]', '(无)')}</span></div> <div class="detail-grid-item"><span class="icon"><i class="fa-solid fa-ring"></i></span><span class="property-name">饰品</span><span class="value-main">${SafeGetValue(equipment, '饰品[0]', '(无)')}</span></div> </div>`; const effectsHtml = `<div id="status-effects-list" style="padding: 5px 0;"> ${effectKeys.length > 0 ? effectKeys.map(key => { const effect = statusEffects[key]; return `<div class="item-row"> <div><b>${SafeGetValue(effect, '名称[0]', key)}</b><br><small>${SafeGetValue(effect, '描述[0]', '...')}</small></div> <span class="value-main">${SafeGetValue(effect, '剩余时间[0]', '')}</span> </div>`; }).join('') : `<p class="empty-state-text">${emptyIcon}(无)</p>`} </div>`; const skillsHtml = `<div id="skills-list" style="padding: 5px 0;"> ${skillKeys.length > 0 ? skillKeys.map(key => { const skill = skills[key]; const cost = SafeGetValue(skill, 'cost[0]', ''); const tagsArray = SafeGetValue(skill, 'tags[0]', []); const tags = Array.isArray(tagsArray) ? tagsArray.map(tag => `<span class="tag">${tag}</span>`).join(' ') : ''; return `<div class="item-row"> <div><b>${SafeGetValue(skill, '名称[0]', key)}</b> (Lv.${SafeGetValue(skill, '等级[0]', 1)}) ${tags}<br><small>${SafeGetValue(skill, '描述[0]', '...')}</small></div> <span class="value-main">${cost}</span> </div>`; }).join('') : `<p class="empty-state-text">${emptyIcon}(无技能)</p>`} </div>`; const tabsHtml = `<div class="protagonist-tabs"> <div class="protagonist-tab ${currentProtagonistTab === 'core' ? 'active' : ''}" data-tab="core">核心</div> <div class="protagonist-tab ${currentProtagonistTab === 'equip' ? 'active' : ''}" data-tab="equip">装备</div> <div class="protagonist-tab ${currentProtagonistTab === 'skills' ? 'active' : ''}" data-tab="skills">技能</div> <div class="protagonist-tab ${currentProtagonistTab === 'effects' ? 'active' : ''}" data-tab="effects">状态</div> </div> <div class="protagonist-tab-content ${currentProtagonistTab !== 'core' ? 'hidden' : ''}" id="protagonist-core"> ${resourcesHtml} ${staticHtml} </div> <div class="protagonist-tab-content ${currentProtagonistTab !== 'equip' ? 'hidden' : ''}" id="protagonist-equip"> ${equipmentHtml} </div> <div class="protagonist-tab-content ${currentProtagonistTab !== 'skills' ? 'hidden' : ''}" id="protagonist-skills"> ${skillsHtml} </div> <div class="protagonist-tab-content ${currentProtagonistTab !== 'effects' ? 'hidden' : ''}" id="protagonist-effects"> ${effectsHtml} </div>`; setContent('protagonist-section', tabsHtml); royal_updateProgressBar('main-hp-bar', hp, maxHp); royal_updateProgressBar('main-mp-bar', mp, maxMp); royal_updateProgressBar('main-sp-bar', sp, maxSp); }
+        function populateMap(worldData) { const locationsArray = SafeGetValue(worldData, '邻近地点[0]', []) || []; const validLocations = Array.isArray(locationsArray) ? locationsArray.filter(loc => Array.isArray(loc) && loc.length > 0 && typeof loc[0] === 'string' && loc[0].trim() !== '' && loc[0] !== '未知地点') : []; const emptyIcon = `<i class="fa-solid fa-map-signs fa-xs" style="opacity: 0.6; margin-right: 5px;"></i>`; const content = validLocations.map(loc => { const locName = loc[0]; const locDesc = loc.length > 1 && typeof loc[1] === 'string' ? loc[1] : ''; return `<div class="map-location"> <div class="location-text"><b>${locName}</b><br><small>${locDesc}</small></div> <button class="action-button" data-action="travel" data-location="${locName}" style="margin-left: auto; padding: 3px 6px; font-size: 0.8em;"> <i class="fa-solid fa-shoe-prints"></i>前往 </button> </div>`; }).join(''); setContent('map-section', content || `<p class="empty-state-text">${emptyIcon}附近似乎没什么可探索的。</p>`); }
+        function populateDestinyAndContacts(data) { const contactsContainer = SafeGetValue(data, '人脉关系', []); const contacts = Array.isArray(contactsContainer) && contactsContainer.length > 0 ? contactsContainer[0] : {}; const contactKeys = typeof contacts === 'object' && contacts !== null ? Object.keys(contacts).filter(k => k !== '$meta') : []; const destinyData = SafeGetValue(data, '命运系统', {}); const redlineCharsContainer = SafeGetValue(destinyData, '红线对象', []); const redlineChars = Array.isArray(redlineCharsContainer) && redlineCharsContainer.length > 0 ? redlineCharsContainer[0] : {}; const redlineKeys = typeof redlineChars === 'object' && redlineChars !== null ? Object.keys(redlineChars).filter(k => k !== '$meta') : []; const emptyIcon = `<i class="fa-solid fa-scroll fa-xs" style="opacity: 0.6; margin-right: 5px;"></i>`; let contactsHtml = contactKeys.length > 0 ? contactKeys.map(k => createCharacterCardHTML(contacts[k], k, false)).join('') : `<p class="empty-state-text">${emptyIcon}(无人脉)</p>`; let destinyHtml = `<div class="detail-grid-item" style="grid-template-columns: 20px auto 1fr; align-items: center; border: none; padding-bottom: 5px;"><span class="icon"><i class="fa-solid fa-hand-holding-heart"></i></span><span class="property-name">命运点数 FP</span> <span class="value-main fp-value">${SafeGetValue(destinyData, '命运点数[0]', 0)}</span></div><hr>` + (redlineKeys.length > 0 ? redlineKeys.map(k => createCharacterCardHTML(redlineChars[k], k, true)).join('') : `<p class="empty-state-text">${emptyIcon}(无红线对象)</p>`); setContent('contacts-section', contactsHtml); setContent('destiny-section', destinyHtml); [...contactKeys, ...redlineKeys].forEach(key => { const char = contacts[key] || redlineChars[key]; if (typeof char === 'object' && char !== null) { const barId = `char-favor-bar-${key}`; const fav = SafeGetValue(char, '好感度[0]', '0/1000'); const [cur, max] = String(fav).split(' ')[0].split('/').map(Number); royal_updateProgressBar(barId, cur || 0, max || 1000); } }); }
+        
+        function createCharacterCardHTML(npcData, npcKey, isRedLine) { 
+            const name = SafeGetValue(npcData, '姓名[0]', '未知角色'); 
+            const affectionText = String(SafeGetValue(npcData, '好感度[0]', '0/1000')).split(' ')[0]; 
+            const barId = `char-favor-bar-${npcKey}`; 
+            const properties = [ 
+                { name: '战力层级', value: SafeGetValue(npcData, '战力层级[0]'), icon: 'fa-solid fa-bolt' }, 
+                { name: '等级', value: SafeGetValue(npcData, '等级[0]'), icon: 'fa-solid fa-dragon' }, 
+                { name: '种族', value: SafeGetValue(npcData, '种族[0]'), icon: 'fa-solid fa-paw' }, 
+                { name: '身份', value: SafeGetValue(npcData, '身份[0]'), icon: 'fa-solid fa-shield-halved' }, 
+                { name: '职业', value: SafeGetValue(npcData, '职业[0]'), icon: 'fa-solid fa-briefcase' }, 
+                { name: '性格', value: SafeGetValue(npcData, '性格[0]'), icon: 'fa-solid fa-brain' }, 
+                { name: '喜爱', value: SafeGetValue(npcData, '喜爱[0]'), icon: 'fa-solid fa-star' }, 
+                { name: '外貌', value: SafeGetValue(npcData, '外貌[0]'), icon: 'fa-solid fa-image-portrait' }, 
+                { name: '衣着', value: SafeGetValue(npcData, '衣着[0]'), icon: 'fa-solid fa-shirt' }, 
+                { name: '武器', value: SafeGetValue(npcData, '装备[0].武器[0]', '(无)'), icon: 'fa-solid fa-gavel' }, 
+                { name: '盔甲', value: SafeGetValue(npcData, '装备[0].盔甲[0]', '(无)'), icon: 'fa-solid fa-shirt' }, 
+                { name: '饰品', value: SafeGetValue(npcData, '装备[0].饰品[0]', '(无)'), icon: 'fa-solid fa-ring' } 
+            ]; 
+            return `<details class="sub-section ${isRedLine ? 'is-redline' : ''}"> <summary>${name}<span class="arrow-toggle">&gt;</span></summary> <div class="sub-section-content"> <div class="detail-grid"> ${properties.map(p => `<div class="detail-grid-item"><span class="icon"><i class="${p.icon}"></i></span><span class="property-name">${p.name}</span><span class="value-main">${p.value || '未知'}</span></div>`).join('')} </div> <hr> <p style="text-align:center; margin-bottom: 3px;"><span class="property-name">好感度: ${affectionText}</span></p> <div class="char-favor-bar-container"><div id="${barId}" class="char-favor-bar"></div></div> <hr> <p style="margin-bottom: 3px;"><span class="property-name">评价:</span><br><span style="font-style: italic; font-size: 0.9em; opacity: 0.9;">${SafeGetValue(npcData, '评价[0]', '暂无')}</span></p> </div> </details>`; 
+        }
 
+        function populateQuests(tasks) { const taskKeys = typeof tasks === 'object' && tasks !== null ? Object.keys(tasks).filter(k => k !== '$meta') : []; const emptyIcon = `<i class="fa-solid fa-scroll fa-xs" style="opacity: 0.6; margin-right: 5px;"></i>`; const content = taskKeys.length > 0 ? taskKeys.map(k => { const task = tasks[k]; if (typeof task !== 'object' || task === null) return ''; const rewardObjContainer = SafeGetValue(task, '奖励', []); const rewardObj = Array.isArray(rewardObjContainer) && rewardObjContainer.length > 0 ? rewardObjContainer[0] : {}; let rewardParts = []; if (typeof rewardObj === 'object' && rewardObj !== null) { const currency = SafeGetValue(rewardObj, '货币', {}); if (typeof currency === 'object' && currency !== null) { Object.keys(currency).forEach(cKey => { const amount = SafeGetValue(currency, `${cKey}[0]`, 0); if (amount > 0) { rewardParts.push(`${cKey} x${amount}`); } }); } const items = SafeGetValue(rewardObj, '物品', {}); if (typeof items === 'object' && items !== null) { Object.keys(items).forEach(iKey => { const amount = SafeGetValue(items, `${iKey}[0]`, 0); if (amount > 0) { rewardParts.push(`${iKey} x${amount}`); } }); } const exp = SafeGetValue(rewardObj, '经验[0]', 0); if (exp > 0) { rewardParts.push(`经验 x${exp}`); } const fp = SafeGetValue(rewardObj, 'FP[0]', 0); if (fp > 0) { rewardParts.push(`FP x${fp}`); } } const rewardString = rewardParts.length > 0 ? rewardParts.join(', ') : '无'; return `<details class="sub-section"> <summary>${SafeGetValue(task, '标题[0]', `任务 ${k}`)}<span class="arrow-toggle">&gt;</span></summary> <div class="sub-section-content"> <p><b>发布者:</b> ${SafeGetValue(task, '发布者[0]', '未知')}</p> <p><b>目标:</b> ${SafeGetValue(task, '当前目标[0]', '...')}</p> <p><b>难度:</b> ${SafeGetValue(task, '难度[0]', '?')} ⭐</p> <p><b>奖励:</b> ${rewardString}</p> <p><b>失败惩罚:</b> ${SafeGetValue(task, '失败惩罚[0]', '无')}</p> </div> </details>`; }).join('') : `<p class="empty-state-text">${emptyIcon}(暂无任务)</p>`; setContent('tasks-section', content); }
+        
+        function populateAssets(assetsData) { 
+            const currency = SafeGetValue(assetsData, '货币', {}); 
+            const inventoryContainer = SafeGetValue(assetsData, '背包', []); 
+            const inventory = Array.isArray(inventoryContainer) && inventoryContainer.length > 0 ? inventoryContainer[0] : {}; 
+            const invKeys = typeof inventory === 'object' && inventory !== null ? Object.keys(inventory).filter(k => k !== '$meta') : []; 
+            const currencyIcons = { '金币': 'fa-solid fa-circle-dollar-to-slot icon-gold', '银币': 'fa-solid fa-coins icon-silver', '铜币': 'fa-solid fa-circle icon-copper', '白金币': 'fa-solid fa-gem icon-platinum', '星辉结晶': 'fa-solid fa-star icon-crystal', '兽骨币': 'fa-solid fa-bone icon-bone' }; 
+            const emptyIcon = `<i class="fa-solid fa-scroll fa-xs" style="opacity: 0.6; margin-right: 5px;"></i>`; 
+            const currencyHtml = typeof currency === 'object' && currency !== null && Object.keys(currency).length > 0 ? `<div class="currency-grid">${Object.keys(currency).filter(c => c !== '$meta').map(c => `<div class="currency-item"><i class="currency-icon ${currencyIcons[c] || 'fa-solid fa-sack-dollar'}"></i><div class="currency-info"><span class="property-name">${c}</span><div class="value-main">${SafeGetValue(currency, `${c}[0]`, 0)}</div></div></div>`).join('')}</div>` : `<p class="empty-state-text">${emptyIcon}(没有货币)</p>`; 
+            const filteredInvKeys = invKeys.filter(key => { const item = inventory[key]; if (currentInventoryFilter === '全部') return true; const itemType = SafeGetValue(item, 'type[0]', '未知'); return itemType === currentInventoryFilter; }); 
+            const inventoryHtml = filteredInvKeys.length > 0 ? filteredInvKeys.map(key => { const item = inventory[key]; if (typeof item !== 'object' || item === null) return ''; return `<div class="item-row"> <div> <b>${SafeGetValue(item, '名称[0]', key)}</b> (x${SafeGetValue(item, '数量[0]', 1)}) <span class="tag">${SafeGetValue(item, 'type[0]', '?')}</span> </div> ${SafeGetValue(item, 'usable[0]', false) ? `<button class="action-button" data-action="use-item" data-item-name="${SafeGetValue(item, '名称[0]', key)}" style="padding: 3px 6px; font-size: 0.8em;"><i class="fa-solid fa-hand-pointer"></i>使用</button>` : ''} </div>`; }).join('') : `<p class="empty-state-text">${emptyIcon}(无${currentInventoryFilter !== '全部' ? currentInventoryFilter : ''}物品)</p>`; 
+            const itemTypes = ['全部', ...new Set(invKeys.map(key => SafeGetValue(inventory[key], 'type[0]', null)).filter(Boolean))]; 
+            const filterButtonsHtml = `<div style="margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 4px;">${itemTypes.map(type => `<button class="filter-btn ${currentInventoryFilter === type ? 'active' : ''}" data-filter-type="inventory" data-filter-value="${type}">${type}</button>`).join('')}</div>`; 
+            setContent('assets-section', `${currencyHtml}<hr><h4>背包</h4>${filterButtonsHtml}${inventoryHtml}`); 
+        }
+        
+        function populateNews(news) { const formatNews = (newsText) => (newsText || '(暂无)').replace(/\\n/g, '<br>'); setContent('news-section', ` <button class="action-button" data-action="update-news" style="width:100%; margin-bottom: 10px;"><i class="fa-solid fa-rotate"></i>更新情报</button> <details class="sub-section"><summary>金狮快讯</summary><div class="sub-section-content">${formatNews(SafeGetValue(news, '金狮快讯[0]', '(暂无)'))}</div></details> <details class="sub-section"><summary>酒馆留言板</summary><div class="sub-section-content">${formatNews(SafeGetValue(news, '酒馆留言板[0]', '(暂无)'))}</div></details> <details class="sub-section"><summary>世界真奇妙</summary><div class="sub-section-content">${formatNews(SafeGetValue(news, '世界真奇妙[0]', '(暂无)'))}</div></details> <details class="sub-section"><summary>莉莉丝的午后茶会</summary><div class="sub-section-content">${formatNews(SafeGetValue(news, '莉莉丝的午后茶会[0]', '(暂无)'))}</div></details> `); }
+        function populateCodex(codexContainer) { const codex = Array.isArray(codexContainer) && codexContainer.length > 0 ? codexContainer[0] : {}; const codexKeys = typeof codex === 'object' && codex !== null ? Object.keys(codex).filter(k => k !== '$meta') : []; const emptyIcon = `<i class="fa-solid fa-scroll fa-xs" style="opacity: 0.6; margin-right: 5px;"></i>`; const content = codexKeys.length > 0 ? codexKeys.map(k => { const entry = codex[k]; if (typeof entry !== 'object' || entry === null) return ''; const category = SafeGetValue(entry, '分类[0]', '未知'); const title = SafeGetValue(entry, '标题[0]', '未知条目'); const description = SafeGetValue(entry, '描述[0]', '...'); let icon = 'fa-solid fa-question'; if (category === '地点') icon = 'fa-solid fa-map'; else if (category === '人物') icon = 'fa-solid fa-user-pen'; else if (category === '历史') icon = 'fa-solid fa-landmark'; else if (category === '物品') icon = 'fa-solid fa-gem'; return `<details class="sub-section memory-entry"> <summary><i class="${icon} icon" style="margin-right: 8px; font-size: 0.9em; opacity: 0.7;"></i> [${category}] ${title}<span class="arrow-toggle">&gt;</span></summary> <div class="sub-section-content memory-content"> <p>${description.replace(/\\n/g, '<br>')}</p> </div> </details>`; }).join('') : `<p class="empty-state-text">${emptyIcon}(图鉴为空)</p>`; setContent('codex-section', content); }
+
+
+        // --- [ 4. 战斗 UI 渲染器 (移植自 Sanguo) ] ---
+        
+        window.battle_ui_events = {
+            selectTab: (tabName) => {
+                currentCombatTab = tabName; 
+                renderBattleUI(window.last_stat_data); 
+            },
+            _addToPreInput: (text) => {
+                try {
+                    const preInputEl = document.getElementById('pre-input-bar');
+                    if (!preInputEl) return;
+                    const oldText_DOM = preInputEl.value;
+                    const oldText_MVU = SafeGetValue(window.last_stat_data, '战斗状态.预输入[0]', ''); 
+                    const newText_DOM = oldText_DOM ? oldText_DOM + '\n' + text : text;
+                    const newText_MVU = oldText_MVU ? oldText_MVU + '\\n' + text : text; 
+                    preInputEl.value = newText_DOM;
+                    if (window.last_stat_data && window.last_stat_data['战斗状态'] && window.last_stat_data['战斗状态']['预输入']) {
+                        window.last_stat_data['战斗状态']['预输入'][0] = newText_MVU;
+                    }
+                    window.SillyTavern_MVU_Set('战斗状态.预输入[0]', oldText_MVU, newText_MVU, 'UI: 添加行动');
+                } catch(e) { console.error("[MasterUI] _addToPreInput failed:", e); }
+            },
+            _getCurrentTargetName: () => {
+                return SafeGetValue(window.last_stat_data, `战斗状态[0].allies.${selectedParticipantKey}.名称[0]`, 
+                       SafeGetValue(window.last_stat_data, `战斗状态[0].enemies.${selectedParticipantKey}.名称[0]`, '??'));
+            },
+            useSkill: (skillName, skillKey) => { window.battle_ui_events._addToPreInput(`${window.battle_ui_events._getCurrentTargetName()} [使用技能] ${skillName}`); },
+            useItem: (itemName, itemKey) => { window.battle_ui_events._addToPreInput(`${window.battle_ui_events._getCurrentTargetName()} [使用物品] ${itemName}`); },
+            coreAction: (action) => { window.battle_ui_events._addToPreInput(`${window.battle_ui_events._getCurrentTargetName()} [${action}]`); },
+            startTurn: () => {
+                try {
+                    const preInputEl = document.getElementById('pre-input-bar');
+                    if (!preInputEl) return;
+                    const textToSend = preInputEl.value; 
+                    const oldText_MVU = SafeGetValue(window.last_stat_data, '战斗状态.预输入[0]', ''); 
+                    if (textToSend && textToSend.trim() !== '') {
+                        const formattedCommand = `/send ${textToSend.replace(/\n/g, ' ')} |/trigger`;
+                        window.SillyTavern_TriggerSlash(formattedCommand); 
+                        preInputEl.value = '';
+                        if (window.last_stat_data && window.last_stat_data['战斗状态'] && window.last_stat_data['战斗状态']['预输入']) {
+                            window.last_stat_data['战斗状态']['预输入'][0] = '';
+                        }
+                        window.SillyTavern_MVU_Set('战斗状态.预输入[0]', oldText_MVU, '', 'UI: 清空预输入并已发送');
+                    } else { console.warn("[MasterUI-Battle] 预输入为空，不发送。"); }
+                } catch(e) { console.error("[MasterUI] startTurn failed:", e); }
+            },
+            endBattle: () => { window.SillyTavern_TriggerSlash('/send [系统指令：战斗结束，请求结算] |/trigger'); }
+        };
+
+        function getParticipantData_v15(key, fullData) {
+            let skills = {};
+            let items = {};
+
+            // [V14] Sanguo 的逻辑是检查战斗者内部，如果为空，再检查外部
+            // 我们的提示词 (V7) 不会填充战斗者内部的技能/背包，所以我们总是检查外部
+
+            if (key === '主角') { // (此方: 修正Key为'主角')
+                skills = SafeGetValue(fullData, '主角.技能[0]', {});
+                items = SafeGetValue(fullData, '财产.背包[0]', {});
+            } else {
+                // (此方: 这里的逻辑是检查盟友(allies)或敌人(enemies)的key)
+                // 盟友的key可能在人脉或红线中
+                skills = SafeGetValue(fullData, `人脉关系[0].${key}.技能[0]`, {});
+                if (Object.keys(skills).length <= 1) { 
+                    skills = SafeGetValue(fullData, `命运系统.红线对象[0].${key}.技能[0]`, {}); 
+                }
+                items = SafeGetValue(fullData, `人脉关系[0].${key}.背包[0]`, {});
+                 if (Object.keys(items).length <= 1) {
+                    items = SafeGetValue(fullData, `命运系统.红线对象[0].${key}.背包[0]`, {});
+                }
+                // (此方: 敌人(enemies)的技能/背包目前设计中不会显示，所以这里OK)
+            }
+            
+            return { skills, items };
+        }
+
+        function renderBattleUI(data) {
+            const wrapper = document.getElementById('battle-ui-wrapper');
+            if (!wrapper) { console.error("[MasterUI] Battle UI wrapper not found!"); return; }
+            const playerArea = document.getElementById('player-combatants-area');
+            const enemyArea = document.getElementById('enemy-combatants-area');
+            const playerPlaceholder = document.getElementById('player-combatants-placeholder');
+            const enemyPlaceholder = document.getElementById('enemy-combatants-placeholder');
+            
+            playerArea.innerHTML = '<div class="team-title">光の盟友</div>';
+            enemyArea.innerHTML = '<div class="team-title">深淵の敵</div>';
+
+            const alliesObj = SafeGetValue(data, '战斗状态[0].allies', {});
+            const enemiesObj = SafeGetValue(data, '战斗状态[0].enemies', {});
+            
+            const allyKeys = Object.keys(alliesObj).filter(k => k !== '$meta');
+            const enemyKeys = Object.keys(enemiesObj).filter(k => k !== '$meta');
+
+            // (此方: 修正了selectedParticipantKey的逻辑，防止它选中不存在的单位)
+            if (!alliesObj[selectedParticipantKey] && !enemiesObj[selectedParticipantKey]) {
+                selectedParticipantKey = allyKeys.length > 0 ? allyKeys[0] : (enemyKeys.length > 0 ? enemyKeys[0] : null);
+            }
+
+            let playerUnitsFound = 0;
+            allyKeys.forEach(key => {
+                const unit = alliesObj[key];
+                if (typeof unit !== 'object' || unit === null) return;
+                const name = SafeGetValue(unit, '名称[0]', key);
+                const type = (key === '主角' ? '主角' : '友军');
+                const hp_val = SafeGetValue(unit, '生命值[0]', 0); 
+                const hp_max = SafeGetValue(unit, '生命值上限[0]', 100);
+                const mp_val = SafeGetValue(unit, '法力值[0]', 0);
+                const mp_max = SafeGetValue(unit, '法力值上限[0]', 100);
+                const hp_perc = hp_max > 0 ? (hp_val / hp_max) * 100 : 0;
+                const mp_perc = mp_max > 0 ? (mp_val / mp_max) * 100 : 0;
+                const isSelected = (key === selectedParticipantKey); 
+
+                let barHtml = `<div class="combatant-bar ${isSelected ? 'selected' : ''}" data-key="${key}"> 
+                                <div class="combatant-header">
+                                    <span class="combatant-name">${name}</span>
+                                    <span class="combatant-type">${type}</span>
+                                </div>
+                                <div class="stat-bars">
+                                    <div class="stat-bar"><div class="stat-bar-value hp" style="width: ${hp_perc}%;"></div><div class="stat-bar-text"><span class="label">命:</span> ${hp_val} / ${hp_max}</div></div>
+                                    <div class="stat-bar"><div class="stat-bar-value mp" style="width: ${mp_perc}%;"></div><div class="stat-bar-text"><span class="label">法:</span> ${mp_val} / ${mp_max}</div></div>
+                                </div>
+                             </div>`;
+                playerArea.innerHTML += barHtml; 
+                playerUnitsFound++;
+            });
+
+            let enemyUnitsFound = 0;
+            enemyKeys.forEach(key => {
+                const unit = enemiesObj[key];
+                if (typeof unit !== 'object' || unit === null) return;
+                const name = SafeGetValue(unit, '名称[0]', key);
+                const type = '敌军';
+                const hp_val = SafeGetValue(unit, '生命值[0]', 0); 
+                const hp_max = SafeGetValue(unit, '生命值上限[0]', 100);
+                const hp_perc = hp_max > 0 ? (hp_val / hp_max) * 100 : 0;
+                const isSelected = (key === selectedParticipantKey); 
+
+                let barHtml = `<div class="combatant-bar ${isSelected ? 'selected' : ''}" data-key="${key}"> 
+                                <div class="combatant-header">
+                                    <span class="combatant-name">${name}</span>
+                                    <span class="combatant-type">${type}</span>
+                                </div>
+                                <div class="stat-bars">
+                                    <div class="stat-bar"><div class="stat-bar-value hp" style="width: ${hp_perc}%;"></div><div class="stat-bar-text"><span class="label">命:</span> ${hp_val} / ${hp_max}</div></div>
+                                </div>
+                             </div>`;
+                enemyArea.innerHTML += barHtml; 
+                enemyUnitsFound++;
+            });
+
+
+            if (playerUnitsFound === 0) playerArea.appendChild(playerPlaceholder.cloneNode(true)); 
+            if (enemyUnitsFound === 0) enemyArea.appendChild(enemyPlaceholder.cloneNode(true)); 
+
+            const tabContentArea = document.getElementById('tab-content-area');
+            tabContentArea.innerHTML = '';
+            
+            document.getElementById('tab-btn-skills').classList.toggle('active-tab', currentCombatTab === 'skills');
+            document.getElementById('tab-btn-bags').classList.toggle('active-tab', currentCombatTab === 'bags');
+
+            // (此方: 只有盟友(ally)和主角(player)被选中时才显示技能和背包)
+            const selectedUnitIsAlly = alliesObj.hasOwnProperty(selectedParticipantKey);
+            if (selectedUnitIsAlly) {
+                const { skills, items } = getParticipantData_v15(selectedParticipantKey, data);
+                if (currentCombatTab === 'skills') {
+                    const skillKeys = Object.keys(skills).filter(k => k !== '$meta');
+                    if (skillKeys.length > 0) {
+                        skillKeys.forEach(key => {
+                            const skill = skills[key];
+                            if (typeof skill !== 'object' || skill === null) return;
+                            const name = SafeGetValue(skill, '名称[0]', key);
+                            const cost = SafeGetValue(skill, 'cost[0]', '无消耗');
+                            const desc = SafeGetValue(skill, '描述[0]', '暂无描述。');
+                            tabContentArea.innerHTML += `<button class="action-item-button" onclick="window.battle_ui_events.useSkill('${name}', '${key}')"><div><div class="action-item-name">${name}</div><div class="action-item-desc">${desc}</div></div><div class="action-item-cost">${cost}</div></button>`;
+                        });
+                    } else { tabContentArea.innerHTML = '<p class="empty-state-text">(未习得奥義)</p>'; }
+                } else { 
+                    const bagKeys = Object.keys(items).filter(k => k !== '$meta');
+                    if (bagKeys.length > 0) {
+                        let itemsFound = 0;
+                        bagKeys.forEach(key => {
+                            const item = items[key];
+                            if (typeof item !== 'object' || item === null) return;
+                            const name = SafeGetValue(item, '名称[0]', key);
+                            const count = SafeGetValue(item, '数量[0]', 0);
+                            const desc = SafeGetValue(item, '描述[0]', '暂无描述。');
+                            if (count <= 0) return; 
+                            tabContentArea.innerHTML += `<button class="action-item-button" onclick="window.battle_ui_events.useItem('${name}', '${key}')"><div><div class="action-item-name">${name}</div><div class="action-item-desc">${desc}</div></div><div class="action-item-count">x ${count}</div></button>`;
+                            itemsFound++;
+                        });
+                        if (itemsFound === 0) { tabContentArea.innerHTML = '<p class="empty-state-text">(次元袋空空如也)</p>'; }
+                    } else { tabContentArea.innerHTML = '<p class="empty-state-text">(次元袋空空如也)</p>'; }
+                }
+            } else {
+                tabContentArea.innerHTML = '<p class="empty-state-text">(无法探知敌人的行动...)</p>';
+            }
+
+            const preInputEl = document.getElementById('pre-input-bar');
+            const logEl = document.getElementById('battle-log-content');
+            
+            if (preInputEl.value.trim() === '') { preInputEl.value = ""; } 
+            
+            let combatLog = SafeGetValue(data, '战斗状态[0].combat_log', []); 
+            if (Array.isArray(combatLog) && combatLog.length > 0 && !Array.isArray(combatLog[0])) {
+                 combatLog = [SafeGetValue(data, '战斗状态[0].combat_log[0]', '(战斗日志)')];
+            } else if (!Array.isArray(combatLog)) {
+                 combatLog = [String(combatLog)];
+            }
+            logEl.innerHTML = combatLog.length > 0 ? combatLog.slice(-10).map(log => `<p>${log}</p>`).join('') : `<p class="empty-state-text">(战况...一片寂静...)</p>`;
+            
+            logEl.scrollTop = logEl.scrollHeight;
+            
+            const endBattleOverlay = document.getElementById('end-battle-overlay');
+            const uiMode = SafeGetValue(data, 'UI状态.当前界面[0]', '日常'); 
+            if (uiMode === '战斗' && enemyKeys.length === 0 && allyKeys.length > 0) { endBattleOverlay.classList.remove('hidden'); } 
+            else { endBattleOverlay.classList.add('hidden'); }
+        }
+
+        // --- [ 5. 主渲染路由 (移植自 Sanguo) ] ---
+        function Master_Render_UI(data) {
+            if (!data || typeof data !== 'object') {
+                console.warn("[RoyalUI V15] Master_Render_UI 收到无效数据。");
+                return;
+            }
+            window.last_stat_data = data; 
+            
+            const uiMode = SafeGetValue(data, 'UI状态.当前界面[0]', '日常');
+            
+            setToggle('chessboard-container-wrapper', uiMode === '日常');
+            setToggle('battle-ui-wrapper', uiMode === '战斗');
+            
+            document.body.classList.toggle('status-mode', uiMode === '日常');
+            document.body.classList.toggle('combat-mode', uiMode === '战斗');
+
+            if (uiMode === '日常') {
+                renderStatusUI(data); 
+            } else {
+                renderBattleUI(data); 
+            }
+        }
+
+        // --- [ 6. 核心初始化 (移植自 Sanguo) ] ---
+        async function Master_Init() {
+            console.log("--- [RoyalUI V15] Master_Init 启动 ---");
+            try {
+                const hasChat = typeof getChatMessages === 'function' && typeof getCurrentMessageId === 'function';
+                const msgs = hasChat ? await getChatMessages(getCurrentMessageId()) : []; 
+                const data = msgs?.[0]?.data?.stat_data; 
+                
+                let mergedData;
+                if (data && typeof data === 'object') {
+                    console.log("[RoyalUI V15] 发现 stat_data。与默认值(V9)合并。");
+                    mergedData = deepMerge(defaultEmptyState, data); 
+                } else {
+                    console.warn('[RoyalUI V15] 未发现 stat_data。使用默认空状态(V9)。');
+                    mergedData = defaultEmptyState;
+                }
+                
+                Master_Render_UI(mergedData); 
+                console.log("--- [RoyalUI V15] Master_Init 完成 ---");
+                
+                document.addEventListener('click', function(event) {
+                    const target = event.target;
+                    const combatWrapper = document.getElementById('battle-ui-wrapper');
+                    
+                    if (combatWrapper && !combatWrapper.classList.contains('hidden')) {
+                        const combatantBar = target.closest('.combatant-bar[data-key]');
+                        if (combatantBar) {
+                            const newKey = combatantBar.dataset.key;
+                            if (newKey !== selectedParticipantKey) {
+                                console.log("[MasterUI] 切换战斗目标 (本地):", newKey);
+                                selectedParticipantKey = newKey;
+                                renderBattleUI(window.last_stat_data); 
+                            }
+                            return; 
+                        }
+                    }
+
+                    const statusContainerVisible = !document.getElementById('chessboard-container-wrapper')?.classList.contains('hidden');
+                    if (statusContainerVisible) {
+                        const filterBtn = target.closest('.filter-btn[data-filter-type]'); 
+                        if (filterBtn) { const filterType = filterBtn.dataset.filterType; const filterValue = filterBtn.dataset.filterValue; if (filterType === 'inventory') { currentInventoryFilter = filterValue; populateAssets(SafeGetValue(window.last_stat_data, '财产', {})); } return; }
+                        
+                        const actionTargetNonCombat = target.closest('.action-button[data-action]'); 
+                        if (actionTargetNonCombat) { const action = actionTargetNonCombat.dataset.action; const location = actionTargetNonCombat.dataset.location; const itemNameNonCombat = actionTargetNonCombat.dataset.itemName; if (action === 'travel' && location) { sendCommand(`/send 前往 ${location} |/trigger`); return; } else if (action === 'update-news') { sendCommand(`/send 更新\"每日新闻\" |/trigger`); return; } }
+                        
+                        const protagonistTab = target.closest('.protagonist-tab[data-tab]'); 
+                        if (protagonistTab) { const newTab = protagonistTab.dataset.tab; if (newTab !== currentProtagonistTab) { currentProtagonistTab = newTab; populateProtagonist(SafeGetValue(window.last_stat_data, '主角', {})); } return; }
+                    }
+                });
+
+            } catch (e) {
+                console.error('CRITICAL Error during [RoyalUI V15] Master_Init:', e);
+                const wrapper = document.getElementById('chessboard-container-wrapper');
+                if(wrapper) wrapper.innerHTML = `<p style='color:red;'>状态栏加载出错: ${e.message}</p>`;
+            }
+        }
+        
+        // --- [ 7. 核心事件监听 (移植自 Sanguo) ] ---
+        if (typeof waitGlobalInitialized === 'function') {
+            console.log("[RoyalUI V15] 等待 Mvu 初始化...");
+            waitGlobalInitialized('Mvu').then(() => {
+                console.log("[RoyalUI V15] Mvu 已初始化. 调用 Master_Init 并设置 *唯一* 监听器。");
+                Master_Init(); 
+                
+                eventOn(Mvu.events.VARIABLE_UPDATE_ENDED, m => {
+                    if (m && m.stat_data && typeof m.stat_data === 'object') {
+                        Master_Render_UI(m.stat_data); 
+                    } else {
+                        console.warn('[RoyalUI V15] 收到 VARIABLE_UPDATE_ENDED 事件，但 stat_data 无效。');
+                    }
+                });
+            }).catch(error => {
+                console.error('[RoyalUI V15] 等待 Mvu 初始化时出错:', error);
+                document.addEventListener('DOMContentLoaded', Master_Init);
+            });
+        } else {
+            console.warn('[RoyalUI V15] waitGlobalInitialized 未找到。在 DOMContentLoaded 上加载。');
+            document.addEventListener('DOMContentLoaded', Master_Init);
+        }
+        
     })();
-  </script>
+</script>
 </body>
 </html>
+```
